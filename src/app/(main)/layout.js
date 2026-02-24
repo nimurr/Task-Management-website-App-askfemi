@@ -23,7 +23,7 @@ export const metadata = {
 export default function Layout({ children }) {
     return (
         <div>
-            {/* <Header /> */}
+            <Header />
             {children}
             {/* <Footer /> */}
         </div>
