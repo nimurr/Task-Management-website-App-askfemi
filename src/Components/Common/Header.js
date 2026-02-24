@@ -97,18 +97,12 @@ const Header = () => {
 
                     {/* Logo */}
                     <Link href="/" className="flex flex-col items-center group shrink-0">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#4A90E2]/20 flex items-center justify-center group-hover:bg-[#4A90E2]/30 transition-colors duration-200">
-                            {/* Swap <FaBrain> for <Image> if you have a real logo file */}
-                            <FaBrain className="text-[#4A90E2] text-xl sm:text-2xl" />
-                        </div>
-                        <span className="text-[#4A90E2] font-extrabold text-xs sm:text-sm tracking-wide mt-0.5 leading-none">
-                            Z3ns
-                        </span>
+                       <img className='md:w-20 w-14 mx-auto md:ml-0' src="/Images/Auth/logo.png" alt="" />
                     </Link>
 
                     {/* Desktop Nav Pills */}
                     <nav
-                        className="hidden md:flex items-center gap-1 bg-blue-100/70 rounded-2xl px-4 py-2 border border-blue-200/60"
+                        className="hidden md:flex items-center gap-1 bg-blue-100/70 rounded-lg px-4 py-3 border border-blue-200/60"
                         aria-label="Main navigation"
                     >
                         {NAV_LINKS.map(({ label, href }) => (
@@ -130,13 +124,13 @@ const Header = () => {
                     <div className="hidden md:flex items-center gap-2">
                         <Link
                             href="/signin"
-                            className="px-5 py-2 text-[#4A90E2] font-semibold text-sm rounded-xl hover:bg-blue-100 transition-colors duration-200"
+                            className="px-5 py-3 text-[#4A90E2] font-semibold text-sm rounded-lg hover:bg-blue-100 transition-colors duration-200"
                         >
                             Sign In
                         </Link>
                         <Link
                             href="/signup"
-                            className="flex items-center gap-1.5 px-5 py-2 bg-[#4A90E2] text-white font-semibold text-sm rounded-xl hover:bg-[#3A80D2] active:scale-95 transition-all duration-200 shadow-sm shadow-blue-200"
+                            className="flex items-center gap-1.5 px-5 py-3 bg-[#4A90E2] text-white font-semibold text-sm rounded-lg hover:bg-[#3A80D2] active:scale-95 transition-all duration-200 shadow-sm shadow-blue-200"
                         >
                             Sign Up
                             <RiArrowRightUpLine className="text-base" />
