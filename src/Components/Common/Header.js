@@ -1,33 +1,3 @@
-// import Link from 'next/link';
-// import React from 'react';
-// import { MdOutlineMailOutline } from 'react-icons/md';
-// import { FaPhoneAlt } from "react-icons/fa";
-
-
-// const Header = () => {
-//     return (
-//         <div>
-//             <div className='bg-primary text-white py-3 text-xl flex items-center justify-end '>
-//                 <div className='flex items-center sm:justify-end sm:gap-5 gap-2 flex-wrap container mx-auto'>
-//                     <Link href='mailto:nimurnerob404@gmail.com' className='flex items-center'>
-//                         <MdOutlineMailOutline className='text-2xl' />
-//                         <span className='ml-2 text-sm'>nimurnerob404@gmail.com</span>
-//                     </Link>
-//                     <Link href='mailto:nimurnerob404@gmail.com' className='flex items-center'>
-//                         <FaPhoneAlt className='text-xl' />
-//                         <span className='ml-2 text-sm'>+8801717-xxxxxx</span>
-//                     </Link>
-//                 </div>
-//             </div>
-//             {/* navbar here */}
-//             <div>
-
-//             </div>
-//         </div>
-//     );
-// }
-
-// export default Header;
 'use client';
 
 import Link from 'next/link';
