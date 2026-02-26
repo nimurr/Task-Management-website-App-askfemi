@@ -1,8 +1,5 @@
-
 'use client';
-
 import Link from 'next/link';
-import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { MdOutlineMailOutline, MdClose } from 'react-icons/md';
 import { FaPhoneAlt, FaBrain } from 'react-icons/fa';
@@ -68,7 +65,7 @@ const Header = () => {
 
                     {/* Logo */}
                     <Link href="/" className="flex flex-col items-center group shrink-0">
-                       <img className='md:w-20 w-14 mx-auto md:ml-0' src="/Images/Auth/logo.png" alt="" />
+                        <img className='md:w-20 w-14 mx-auto md:ml-0' src="/Images/Auth/logo.png" alt="" />
                     </Link>
 
                     {/* Desktop Nav Pills */}
@@ -82,8 +79,8 @@ const Header = () => {
                                 href={href}
                                 onClick={() => setActiveLink(href)}
                                 className={`px-4 py-1.5 rounded-xl text-sm font-medium transition-all duration-200 ${activeLink === href
-                                        ? 'bg-white text-[#4A90E2] shadow-sm'
-                                        : 'text-gray-500 hover:text-[#4A90E2] hover:bg-white/60'
+                                    ? 'bg-white text-[#4A90E2] shadow-sm'
+                                    : 'text-gray-500 hover:text-[#4A90E2] hover:bg-white/60'
                                     }`}
                             >
                                 {label}
@@ -95,7 +92,7 @@ const Header = () => {
                     <div className="hidden md:flex items-center gap-2">
                         <Link
                             href="/signin"
-                            className="px-5 py-3 text-[#4A90E2] font-semibold text-sm rounded-lg hover:bg-blue-100 transition-colors duration-200"
+                            className="px-5 py-3 text-[#4A90E2] font-semibold text-sm rounded-lg  bg-blue-100 transition-colors duration-200"
                         >
                             Sign In
                         </Link>
@@ -161,8 +158,8 @@ const Header = () => {
                                 onClick={() => { setActiveLink(href); setMenuOpen(false); }}
                                 style={{ animationDelay: `${i * 60}ms` }}
                                 className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${activeLink === href
-                                        ? 'bg-blue-50 text-[#4A90E2]'
-                                        : 'text-gray-600 hover:bg-blue-50 hover:text-[#4A90E2]'
+                                    ? 'bg-blue-50 text-[#4A90E2]'
+                                    : 'text-gray-600 hover:bg-blue-50 hover:text-[#4A90E2]'
                                     }`}
                             >
                                 {label}
