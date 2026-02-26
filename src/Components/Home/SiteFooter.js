@@ -9,7 +9,7 @@ const SiteFooter = () => {
                 className="container mx-auto  "
 
             >
-                <div className='bg-[#F0F4FA] overflow-hidden rounded-lg border-t-2 border-l-2 border-r-2 border-[#C8D9EF]'>
+                <div className='bg-[#F0F4FA] overflow-hidden rounded-tl-2xl rounded-tr-2xl border-t-2 border-l-2 border-r-2 border-[#C8D9EF]'>
 
                     {/* Top row — logo left, nav links right */}
                     <div className="flex  flex-col sm:flex-row items-start sm:items-center justify-between px-8 sm:px-10 pt-8 pb-4 gap-6">

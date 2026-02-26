@@ -142,13 +142,14 @@ const ContactSections = () => {
                                     </label>
                                     <input
                                         type="text"
+                                        placeholder="Name"
                                         name="fullName"
                                         value={form.fullName}
                                         onChange={handleChange}
                                         required
                                         className="w-full bg-transparent outline-none text-sm text-gray-800 pb-2"
                                         style={{ borderBottom: '1.5px solid #D1D9E8' }}
-                                        placeholder=""
+
                                     />
                                 </div>
 
@@ -159,13 +160,14 @@ const ContactSections = () => {
                                     </label>
                                     <input
                                         type="email"
+                                        placeholder="Email Address"
                                         name="email"
                                         value={form.email}
                                         onChange={handleChange}
                                         required
                                         className="w-full bg-transparent outline-none text-sm text-gray-800 pb-2"
                                         style={{ borderBottom: '1.5px solid #D1D9E8' }}
-                                        placeholder=""
+
                                     />
                                 </div>
 
@@ -179,7 +181,7 @@ const ContactSections = () => {
                                         onChange={handleChange}
                                         className="w-full bg-transparent outline-none text-sm text-gray-800 pb-2"
                                         style={{ borderBottom: '1.5px solid #D1D9E8' }}
-                                        placeholder=""
+                                        placeholder=" +1 (123) 456-7890"
                                     />
                                 </div>
 
@@ -193,7 +195,7 @@ const ContactSections = () => {
                                         onChange={handleChange}
                                         className="w-full bg-transparent outline-none text-sm text-gray-800 pb-2"
                                         style={{ borderBottom: '1.5px solid #D1D9E8' }}
-                                        placeholder=""
+                                        placeholder="How can we help you?"
                                     />
                                 </div>
 

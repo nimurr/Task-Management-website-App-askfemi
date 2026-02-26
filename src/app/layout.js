@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
       >
         <NextTopLoader
           color="#ebf4fd"  // Change to your desired color
-          height={6}        // Adjust the height in pixels
+          height={3}        // Adjust the height in pixels
           speed={800}       // Animation speed in milliseconds
           showSpinner={false} // Hide the loading spinner
           easing="ease"     // Animation easing

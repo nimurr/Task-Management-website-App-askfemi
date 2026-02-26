@@ -7,9 +7,9 @@ import { HiMenuAlt3 } from 'react-icons/hi';
 import { RiArrowRightUpLine } from 'react-icons/ri';
 
 const NAV_LINKS = [
-    { label: 'How it work', href: '#how-it-works' },
-    { label: 'Pricing', href: '#pricing' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'How it work', href: '/how-it-works' },
+    { label: 'Pricing', href: '/pricing' },
+    { label: 'Contact', href: '/contact' },
 ];
 
 const Header = () => {
@@ -91,7 +91,7 @@ const Header = () => {
                     {/* Desktop Auth Buttons */}
                     <div className="hidden md:flex items-center gap-2">
                         <Link
-                            href="/signin"
+                            href="/login"
                             className="px-5 py-3 text-[#4A90E2] font-semibold text-sm rounded-lg  bg-blue-100 transition-colors duration-200"
                         >
                             Sign In
@@ -171,7 +171,7 @@ const Header = () => {
                     {/* Drawer Auth Buttons */}
                     <div className="px-4 py-5 border-t border-gray-100 flex flex-col gap-3">
                         <Link
-                            href="/signin"
+                            href="/login"
                             onClick={() => setMenuOpen(false)}
                             className="w-full text-center py-2.5 rounded-xl border-2 border-[#4A90E2] text-[#4A90E2] font-semibold text-sm hover:bg-blue-50 transition-colors duration-200"
                         >
