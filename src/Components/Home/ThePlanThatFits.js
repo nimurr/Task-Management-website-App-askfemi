@@ -29,10 +29,10 @@ const ThePlanThatFits = () => {
     const [showMore, setShowMore] = useState(false);
 
     return (
-        <section className="w-full  py-14 px-4">
+        <section className="w-full  py-14">
 
             {/* Outer relative wrapper for badge overlap */}
-            <div className="container mx-auto   relative pt-6">
+            <div className="container mx-auto relative pt-6">
 
                 {/* Badge overlapping top border */}
                 <div
