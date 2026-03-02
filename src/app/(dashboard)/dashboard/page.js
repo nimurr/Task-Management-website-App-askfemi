@@ -1,10 +1,13 @@
 
+import TaskManagementMain from '@/Components/Dashboard/Home/TaskManagementMain';
+import TeamOverview from '@/Components/Dashboard/Home/TeamOverview';
 import React from 'react';
 
 const Page = () => {
     return (
         <div>
-           Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo laborum distinctio accusamus ut sequi iste ea vel, saepe eligendi quas.
+            <TeamOverview />
+            <TaskManagementMain />
         </div>
     );
 }

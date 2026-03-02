@@ -1,11 +1,19 @@
 import React from 'react';
-import { FiSearch, FiBell, FiChevronDown } from 'react-icons/fi';
+import { FiSearch, FiBell, FiChevronDown, FiMenu } from 'react-icons/fi';
 
-const DashboardHeader = () => {
+const DashboardHeader = ({ toggleSidebar }) => {
     return (
         <div className='w-full bg-[#eef1f5] h-[60px] flex items-center justify-between px-4 border-b border-gray-200'>
             {/* Search Bar */}
-            <div className='flex items-center bg-white rounded-lg px-3 py-2 w-[380px] shadow-sm border border-gray-100'>
+
+            <button
+                onClick={toggleSidebar}
+                className="lg:hidden"
+            >
+                <FiMenu size={24} />
+            </button>
+
+            <div className='hidden lg:flex items-center bg-white rounded-lg px-3 py-2 w-[380px] shadow-sm border border-gray-100'>
                 <FiSearch className='text-gray-400 w-4 h-4 mr-2 flex-shrink-0' />
                 <input
                     type='text'
