@@ -75,8 +75,18 @@ const memberStatusStyles = {
 const Divider = () => <hr className='border-dashed border-gray-200 my-3' />;
 
 const TaskCard = ({ task }) => {
+
+        const handleGotaskDetials = () => {
+        if (task.taskType === 'Group Tasks') {
+            window.location.href = '/dashboard/group-task-details';
+        }
+        else {
+            window.location.href = '/dashboard/single-task-details';
+        }
+    };
+
     return (
-        <div className='bg-white rounded-2xl p-5 shadow-sm border border-gray-100'>
+        <div onClick={handleGotaskDetials} className='bg-white cursor-pointer rounded-2xl p-5 shadow-sm border border-gray-100'>
             {/* Title + Status */}
             <div className='flex items-center justify-between mb-1'>
                 <h2 className='text-lg font-bold text-gray-900'>{task.title}</h2>
