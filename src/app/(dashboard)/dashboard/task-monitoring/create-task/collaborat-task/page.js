@@ -177,7 +177,6 @@ const Page = () => {
           <div className="space-y-3">
             {initialMembers.map((member) => {
               const selected = selectedMembers.includes(member.id);
-
               return (
                 <div
                   key={member.id}
