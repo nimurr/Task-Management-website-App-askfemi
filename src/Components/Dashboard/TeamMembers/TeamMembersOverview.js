@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 import { FiUser, FiPlus, FiBookmark, FiClipboard, FiCheckSquare, FiActivity } from 'react-icons/fi';
 
@@ -17,10 +18,10 @@ const TeamMembersOverview = () => {
                     <h1 className='text-2xl font-bold text-gray-900'>Team Members</h1>
                     <p className='text-sm text-gray-400 mt-1'>Manage and monitor your team's progress</p>
                 </div>
-                <button className='flex items-center gap-2 bg-primary hover:bg-blue-400 text-white text-sm font-semibold px-5 py-3 rounded-lg transition-colors cursor-pointer'>
+                <Link href={`/dashboard/team-members/create`} className='flex items-center gap-2 bg-primary hover:bg-blue-400 text-white text-sm font-semibold px-5 py-3 rounded-lg transition-colors cursor-pointer'>
                     <FiPlus size={16} />
                     Create Member
-                </button>
+                </Link>
             </div>
 
             {/* Stats Cards */}

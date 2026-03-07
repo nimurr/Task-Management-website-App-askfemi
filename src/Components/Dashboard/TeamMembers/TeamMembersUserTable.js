@@ -1,4 +1,5 @@
 'use client'
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { FiInfo, FiEdit2, FiTrash2, FiAlertTriangle } from 'react-icons/fi';
 
@@ -71,12 +72,12 @@ const TeamMembersUserTable = () => {
                                 </td>
                                 <td className='px-4 py-5'>
                                     <div className='flex items-center gap-2'>
-                                        <button className='w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-blue-500 hover:border-blue-300 transition-colors cursor-pointer'>
+                                        <Link href={`/dashboard/team-members/view/1`} className='w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-blue-500 hover:border-blue-300 transition-colors cursor-pointer'>
                                             <FiInfo size={15} />
-                                        </button>
-                                        <button className='w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-green-500 hover:border-green-300 transition-colors cursor-pointer'>
+                                        </Link>
+                                        <Link href={`/dashboard/team-members/edit`} className='w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-green-500 hover:border-green-300 transition-colors cursor-pointer'>
                                             <FiEdit2 size={14} />
-                                        </button>
+                                        </Link>
                                         <button
                                             onClick={() => handleDeleteClick(member)}
                                             className='w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-300 transition-colors cursor-pointer'
@@ -127,7 +128,7 @@ const TeamMembersUserTable = () => {
                                 <p className='text-xs text-gray-400'>{deleteTarget.email}</p>
                             </div>
                         </div>
-                        
+
                         {/* Buttons */}
                         <div className='flex items-center gap-3'>
                             <button
