@@ -127,7 +127,7 @@ const TeamMembersUserTable = () => {
                                 <p className='text-xs text-gray-400'>{deleteTarget.email}</p>
                             </div>
                         </div>
-
+                        
                         {/* Buttons */}
                         <div className='flex items-center gap-3'>
                             <button
