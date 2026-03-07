@@ -37,9 +37,9 @@ const DashboardSidebar = () => {
         <div className='min-w-72 w-72 border-r-2 border-gray-200 bg-gray-100 min-h-screen flex flex-col'>
 
             {/* Logo */}
-            <div className='flex flex-col items-center py-6 gap-1'>
+            <Link href="/" className='flex flex-col items-center py-6 gap-1'>
                 <img className='w-28' src="/Images/Auth/logo.png" alt="" />
-            </div>
+            </Link>
 
             {/* Nav Menu */}
             <nav className='flex flex-col gap-1 px-3'>
