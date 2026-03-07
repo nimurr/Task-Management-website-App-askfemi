@@ -29,7 +29,7 @@ const TaskMonitoringOverview = () => {
             </div>
 
             {/* Stats Cards */}
-            <div className='grid grid-cols-4 gap-4'>
+            <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-4'>
                 {stats.map((stat, index) => (
                     <div key={index} className='bg-white rounded-2xl p-5 border border-gray-100 shadow-sm'>
                         <div className='flex items-start justify-between mb-4'>

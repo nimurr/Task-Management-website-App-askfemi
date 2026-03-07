@@ -6,8 +6,8 @@ const Page = () => {
             <div className=" mx-auto space-y-6">
 
                 {/* Profile Header */}
-                <div className="bg-white rounded-xl shadow-sm p-6 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
+                <div className="bg-white rounded-xl shadow-sm p-6 flex items-center justify-between flex-wrap">
+                    <div className="flex items-center flex-wrap gap-4">
                         <img
                             src="https://i.pravatar.cc/100"
                             alt="profile"
@@ -19,7 +19,7 @@ const Page = () => {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center flex-wrap gap-4">
                         <div className="text-right">
                             <p className="text-sm text-gray-500">Support Mode</p>
                             <p className="text-sm font-medium text-gray-700">Calm</p>

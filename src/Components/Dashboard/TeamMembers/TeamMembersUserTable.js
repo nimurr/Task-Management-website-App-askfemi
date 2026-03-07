@@ -31,7 +31,7 @@ const TeamMembersUserTable = () => {
     return (
         <>
             {/* Table */}
-            <div className='bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden'>
+            <div className='bg-white rounded-2xl  border border-gray-100 shadow-sm overflow-x-auto'>
                 <table className='w-full'>
                     <thead>
                         <tr className='border-b border-gray-100'>

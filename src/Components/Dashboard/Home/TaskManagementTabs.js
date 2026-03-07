@@ -24,7 +24,7 @@ const TaskManagementTabs = () => {
             <p className='text-gray-400 text-sm mt-1 mb-5'>Create and assign tasks to family members</p>
 
             {/* Tabs */}
-            <div className='flex items-center gap-2 border-b-2 border-gray-200'>
+            <div className='flex items-center flex-wrap gap-2 border-b-2 border-gray-200'>
                 {tabs.map((tab) => (
                     <button
                         key={tab.label}

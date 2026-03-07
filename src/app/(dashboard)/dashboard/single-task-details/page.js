@@ -43,7 +43,7 @@ const Page = () => {
 
             {/* Top Card — User + Support Mode */}
             <div className='bg-white rounded-2xl p-5 border border-gray-100 shadow-sm mb-4'>
-                <div className='flex items-center justify-between'>
+                <div className='flex items-center justify-between flex-wrap gap-3'>
                     {/* User */}
                     <div className='flex items-center gap-3'>
                         <div className='relative'>
@@ -110,7 +110,7 @@ const Page = () => {
 
             {/* Stats Card */}
             <div className='bg-white rounded-2xl p-5 border border-gray-100 shadow-sm mb-4'>
-                <div className='grid grid-cols-4 gap-4'>
+                <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-4'>
                     {/* Task Created */}
                     <div>
                         <p className='text-sm font-semibold text-gray-800 mb-2'>Task Created</p>
