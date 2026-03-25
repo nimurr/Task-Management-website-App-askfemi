@@ -1,3 +1,3 @@
-const url = "https://jsonplaceholder.typicode.com"
+const url = "https://newsheakh6733.sobhoy.com"
 
 export default url;

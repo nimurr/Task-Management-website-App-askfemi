@@ -26,7 +26,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ToastContainer />
+        <ToastContainer 
+        autoClose={3000} 
+        theme="colored" />
+
         <NextTopLoader
           color="#ebf4fd"  // Change to your desired color
           height={3}        // Adjust the height in pixels
@@ -35,6 +38,7 @@ export default function RootLayout({ children }) {
           easing="ease"     // Animation easing
 
         />
+        
         <Providers>
           {children}
         </Providers>

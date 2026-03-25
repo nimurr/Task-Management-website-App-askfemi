@@ -4,9 +4,46 @@ import Link from 'next/link';
 import { FaBrain, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { MdOutlineMailOutline } from 'react-icons/md';
 import { FcGoogle } from 'react-icons/fc';
+import ButtonLoading from '@/Components/Common/ButtonLoading';
+import { useLoginMutation } from '@/redux/fetures/auth/login';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 const Page = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [loginUser, { isLoading }] = useLoginMutation();
+    const navigate = useRouter();
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        const formData = e.target;
+        const email = formData.email.value;
+        const password = formData.password.value;
+        const data = { email, password };
+
+        try {
+            const response = await loginUser(data).unwrap();
+
+
+            if (response?.error) {
+                toast.error(response.error.data.message || 'Something went wrong');
+            }
+            else {
+                toast.success('Login successful');
+                localStorage.setItem('user', JSON.stringify(response?.data?.attributes?.userWithoutPassword));
+                localStorage.setItem('token', JSON.stringify(response?.data?.attributes?.tokens?.accessToken));
+                if (response?.data?.attributes?.userWithoutPassword?.role === 'business' || response?.data?.attributes?.userWithoutPassword?.role === 'super-admin') {
+                    // window.location.href = '/dashboard';
+                    navigate.push('/dashboard');
+                }
+
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.data.message || 'Something went wrong');
+        }
+
+    };
 
     return (
         <div className="h-screen flex overflow-hidden bg-[#F0F4FA]">
@@ -35,7 +72,7 @@ const Page = () => {
                     <p className="text-gray-500 text-sm mb-6">Welcome back! Please enter your details.</p>
 
                     {/* Form */}
-                    <form className="flex flex-col gap-4" onSubmit={e => e.preventDefault()}>
+                    <form className="flex flex-col gap-4" onSubmit={handleLogin}>
 
                         {/* Email */}
                         <div
@@ -87,10 +124,10 @@ const Page = () => {
                         {/* Sign In Button */}
                         <button
                             type="submit"
-                            className="w-full py-3 rounded-xl text-white text-sm font-semibold transition-opacity hover:opacity-90 active:scale-[0.98]"
+                            className="w-full py-3 rounded-xl flex items-center justify-center gap-2 text-white text-sm font-semibold transition-opacity hover:opacity-90 active:scale-[0.98]"
                             style={{ background: '#4A90E2' }}
                         >
-                            Sign in
+                            Sign in {isLoading && <ButtonLoading />}
                         </button>
 
                         {/* Google Login */}

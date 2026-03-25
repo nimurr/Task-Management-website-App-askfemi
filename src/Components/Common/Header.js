@@ -17,12 +17,20 @@ const Header = () => {
     const [scrolled, setScrolled] = useState(false);
     const [activeLink, setActiveLink] = useState('');
 
+    const [user, setUser] = useState(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
+
     /* Shrink navbar on scroll */
     useEffect(() => {
+
         const onScroll = () => setScrolled(window.scrollY > 10);
         window.addEventListener('scroll', onScroll);
         return () => window.removeEventListener('scroll', onScroll);
+        const userInfo = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+        setUser(userInfo);
+
     }, []);
+
+    console.log(user)
 
     /* Lock body scroll when mobile menu is open */
     useEffect(() => {
@@ -89,21 +97,41 @@ const Header = () => {
                     </nav>
 
                     {/* Desktop Auth Buttons */}
-                    <div className="hidden md:flex items-center gap-2">
-                        <Link
-                            href="/login"
-                            className="px-5 py-3 text-[#4A90E2] font-semibold text-sm rounded-lg  bg-blue-100 transition-colors duration-200"
-                        >
-                            Sign In
-                        </Link>
-                        <Link
-                            href="/signup"
-                            className="flex items-center gap-1.5 px-5 py-3 bg-[#4A90E2] text-white font-semibold text-sm rounded-lg hover:bg-[#3A80D2] active:scale-95 transition-all duration-200 shadow-sm shadow-blue-200"
-                        >
-                            Sign Up
-                            <RiArrowRightUpLine className="text-base" />
-                        </Link>
-                    </div>
+
+                    {
+                        user ?
+                            <div>
+                                <div className="hidden md:flex items-center gap-2">
+                                    <Link
+                                        href="/dashboard"
+                                        className="px-5 py-3 bg-primary hover:bg-blue-400 text-white font-semibold text-sm rounded-lg transition-colors duration-200"
+                                    >
+                                        Dashboard
+                                    </Link>
+                                </div>
+                            </div>
+                            :
+                            <div>
+
+                                <div className="hidden md:flex items-center gap-2">
+                                    <Link
+                                        href="/login"
+                                        className="px-5 py-3 text-[#4A90E2] font-semibold text-sm rounded-lg  bg-blue-100 transition-colors duration-200"
+                                    >
+                                        Sign In
+                                    </Link>
+                                    <Link
+                                        href="/signup"
+                                        className="flex items-center gap-1.5 px-5 py-3 bg-[#4A90E2] text-white font-semibold text-sm rounded-lg hover:bg-[#3A80D2] active:scale-95 transition-all duration-200 shadow-sm shadow-blue-200"
+                                    >
+                                        Sign Up
+                                        <RiArrowRightUpLine className="text-base" />
+                                    </Link>
+                                </div>
+                            </div>
+                    }
+
+
 
                     {/* Mobile Hamburger */}
                     <button
@@ -115,15 +143,15 @@ const Header = () => {
                         <HiMenuAlt3 className="text-2xl" />
                     </button>
                 </div>
-            </div>
+            </div >
 
             {/* ── Mobile Drawer Overlay ────────────────────────── */}
-            <div
+            <div div
                 className={`fixed inset-0 z-50 md:hidden transition-all duration-300 ${menuOpen ? 'visible' : 'invisible'
                     }`}
             >
                 {/* Backdrop */}
-                <div
+                < div
                     onClick={() => setMenuOpen(false)}
                     className={`absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-300 ${menuOpen ? 'opacity-100' : 'opacity-0'
                         }`}
@@ -131,15 +159,14 @@ const Header = () => {
 
                 {/* Drawer Panel */}
                 <div
-                    className={`absolute top-0 right-0 h-full w-72 max-w-[85vw] bg-white shadow-2xl flex flex-col transition-transform duration-300 ease-out ${menuOpen ? 'translate-x-0' : 'translate-x-full'
+                    className={`absolute top-0 right-0 h-full w-full max-w-[80vw] bg-white shadow-2xl flex flex-col transition-transform duration-300 ease-out ${menuOpen ? 'translate-x-0' : 'translate-x-full'
                         }`}
                 >
                     {/* Drawer Header */}
                     <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-[#EBF4FD]">
-                        <div className="flex items-center gap-2">
-                            <FaBrain className="text-[#4A90E2] text-xl" />
-                            <span className="text-[#4A90E2] font-extrabold text-base tracking-wide">Z3ns</span>
-                        </div>
+                        <Link href="/" className="flex flex-col items-center group shrink-0">
+                            <img className='md:w-20 w-14 mx-auto md:ml-0' src="/Images/Auth/logo.png" alt="" />
+                        </Link>
                         <button
                             onClick={() => setMenuOpen(false)}
                             aria-label="Close menu"
@@ -166,26 +193,58 @@ const Header = () => {
                                 <RiArrowRightUpLine className="text-base opacity-40" />
                             </Link>
                         ))}
+
+                        {
+                            NAV_LINKS && user &&
+                            <Link
+                                href="/dashboard"
+                                onClick={() => { setActiveLink('/dashboard'); setMenuOpen(false); }}
+                                style={{ animationDelay: `${NAV_LINKS.length * 60}ms` }}
+                                className={`flex items-center justify-center px-4 py-3 rounded-xl text-sm mt-5 font-medium transition-all bg-primary text-white duration-200 ${activeLink === '/dashboard'
+                                    ? 'bg-blue-500 text-[#ffffff] '
+                                    : 'text-gray-600 hover:bg-blue-50 hover:text-[#4A90E2] '
+                                    }`}
+                            >
+                                Dashboard
+                                {/* <RiArrowRightUpLine className="text-base opacity-40" /> */}
+                            </Link>
+                        }
+
                     </nav>
 
+                    {
+                        user ?
+                            <div>
+                                <div className="hidden md:flex items-center gap-2">
+                                    <Link
+                                        href="/dashboard"
+                                        className="px-5 py-3 bg-primary hover:bg-blue-400 text-white font-semibold text-sm rounded-lg transition-colors duration-200"
+                                    >
+                                        Dashboard
+                                    </Link>
+                                </div>
+                            </div>
+                            :
+                            <div className="px-4 py-5 border-t border-gray-100 flex flex-col gap-3">
+                                <Link
+                                    href="/login"
+                                    onClick={() => setMenuOpen(false)}
+                                    className="w-full text-center py-2.5 rounded-xl border-2 border-[#4A90E2] text-[#4A90E2] font-semibold text-sm hover:bg-blue-50 transition-colors duration-200"
+                                >
+                                    Sign In
+                                </Link>
+                                <Link
+                                    href="/signup"
+                                    onClick={() => setMenuOpen(false)}
+                                    className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#4A90E2] text-white font-semibold text-sm hover:bg-[#3A80D2] active:scale-95 transition-all duration-200 shadow-sm shadow-blue-200"
+                                >
+                                    Sign Up
+                                    <RiArrowRightUpLine className="text-base" />
+                                </Link>
+                            </div>
+                    }
+
                     {/* Drawer Auth Buttons */}
-                    <div className="px-4 py-5 border-t border-gray-100 flex flex-col gap-3">
-                        <Link
-                            href="/login"
-                            onClick={() => setMenuOpen(false)}
-                            className="w-full text-center py-2.5 rounded-xl border-2 border-[#4A90E2] text-[#4A90E2] font-semibold text-sm hover:bg-blue-50 transition-colors duration-200"
-                        >
-                            Sign In
-                        </Link>
-                        <Link
-                            href="/signup"
-                            onClick={() => setMenuOpen(false)}
-                            className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#4A90E2] text-white font-semibold text-sm hover:bg-[#3A80D2] active:scale-95 transition-all duration-200 shadow-sm shadow-blue-200"
-                        >
-                            Sign Up
-                            <RiArrowRightUpLine className="text-base" />
-                        </Link>
-                    </div>
 
                     {/* Drawer Contact Info */}
                     <div className="px-4 py-4 bg-[#EBF4FD] border-t border-blue-100 flex flex-col gap-2">
@@ -199,9 +258,9 @@ const Header = () => {
                         </Link>
                     </div>
                 </div>
-            </div>
+            </div >
 
-        </header>
+        </header >
     );
 };
 
