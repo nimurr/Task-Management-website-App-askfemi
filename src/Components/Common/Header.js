@@ -5,6 +5,9 @@ import { MdOutlineMailOutline, MdClose } from 'react-icons/md';
 import { FaPhoneAlt, FaBrain } from 'react-icons/fa';
 import { HiMenuAlt3 } from 'react-icons/hi';
 import { RiArrowRightUpLine } from 'react-icons/ri';
+import { useGetProfileQuery } from '@/redux/fetures/profile/profile';
+import url from '@/redux/api/baseUrl';
+import { FiChevronDown } from 'react-icons/fi';
 
 const NAV_LINKS = [
     { label: 'How it work', href: '/how-it-works' },
@@ -17,20 +20,17 @@ const Header = () => {
     const [scrolled, setScrolled] = useState(false);
     const [activeLink, setActiveLink] = useState('');
 
-    const [user, setUser] = useState(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
-
+    const { data } = useGetProfileQuery();
+    const user = data?.data?.attributes;
     /* Shrink navbar on scroll */
     useEffect(() => {
 
         const onScroll = () => setScrolled(window.scrollY > 10);
         window.addEventListener('scroll', onScroll);
-        const userInfo = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
-        setUser(userInfo);
 
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
-
-    console.log(user)
+ 
 
     /* Lock body scroll when mobile menu is open */
     useEffect(() => {
@@ -102,11 +102,15 @@ const Header = () => {
                         user ?
                             <div>
                                 <div className="hidden md:flex items-center gap-2">
-                                    <Link
-                                        href="/dashboard"
-                                        className="px-5 py-3 bg-primary hover:bg-blue-400 text-white font-semibold text-sm rounded-lg transition-colors duration-200"
-                                    >
-                                        Dashboard
+                                    <Link href='/dashboard' className='flex items-center gap-2 cursor-pointer hover:bg-blue-200 bg-blue-100 rounded-lg px-3 py-2 transition-colors'>
+                                        <div className='w-9 h-9 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-400 flex-shrink-0 flex items-center justify-center'>
+                                            <img className='w-full h-cull' src={url + user?.profileImage?.imageUrl} alt="" />
+                                        </div>
+                                        <div className='flex flex-col leading-tight'>
+                                            <span className='text-sm font-semibold text-gray-800'>{user?.name}</span>
+                                            <span className='text-xs text-gray-500 capitalize'>{user?.role} account</span>
+                                        </div>
+                                        <FiChevronDown className='w-4 h-4 text-gray-500 ml-1' />
                                     </Link>
                                 </div>
                             </div>
@@ -196,17 +200,15 @@ const Header = () => {
 
                         {
                             NAV_LINKS && user &&
-                            <Link
-                                href="/dashboard"
-                                onClick={() => { setActiveLink('/dashboard'); setMenuOpen(false); }}
-                                style={{ animationDelay: `${NAV_LINKS.length * 60}ms` }}
-                                className={`flex items-center justify-center px-4 py-3 rounded-xl text-sm mt-5 font-medium transition-all bg-primary text-white duration-200 ${activeLink === '/dashboard'
-                                    ? 'bg-blue-500 text-[#ffffff] '
-                                    : 'text-gray-600 hover:bg-blue-50 hover:text-[#4A90E2] '
-                                    }`}
-                            >
-                                Dashboard
-                                {/* <RiArrowRightUpLine className="text-base opacity-40" /> */}
+                            <Link href='/dashboard' className='flex items-center justify-center mt-5 gap-2 cursor-pointer hover:bg-blue-200 bg-blue-100 rounded-lg px-3 py-2 transition-colors'>
+                                <div className='w-9 h-9 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-400 flex-shrink-0 flex items-center justify-center'>
+                                    <img className='w-full h-cull' src={url + user?.profileImage?.imageUrl} alt="" />
+                                </div>
+                                <div className='flex flex-col leading-tight'>
+                                    <span className='text-sm font-semibold text-gray-800'>{user?.name}</span>
+                                    <span className='text-xs text-gray-500 capitalize'>{user?.role} account</span>
+                                </div>
+                                <FiChevronDown className='w-4 h-4 text-gray-500 ml-1' />
                             </Link>
                         }
 
@@ -216,11 +218,15 @@ const Header = () => {
                         user ?
                             <div>
                                 <div className="hidden md:flex items-center gap-2">
-                                    <Link
-                                        href="/dashboard"
-                                        className="px-5 py-3 bg-primary hover:bg-blue-400 text-white font-semibold text-sm rounded-lg transition-colors duration-200"
-                                    >
-                                        Dashboard
+                                    <Link href='/dashboard' className='flex items-center gap-2 cursor-pointer hover:bg-blue-200 bg-blue-100 rounded-lg px-3 py-2 transition-colors'>
+                                        <div className='w-9 h-9 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-400 flex-shrink-0 flex items-center justify-center'>
+                                            <img className='w-full h-cull' src={url + user?.profileImage?.imageUrl} alt="" />
+                                        </div>
+                                        <div className='flex flex-col leading-tight'>
+                                            <span className='text-sm font-semibold text-gray-800'>{user?.name}</span>
+                                            <span className='text-xs text-gray-500 capitalize'>{user?.role} account</span>
+                                        </div>
+                                        <FiChevronDown className='w-4 h-4 text-gray-500 ml-1' />
                                     </Link>
                                 </div>
                             </div>

@@ -1,4 +1,6 @@
 'use client'
+import url from '@/redux/api/baseUrl';
+import { useGetProfileQuery } from '@/redux/fetures/profile/profile';
 import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
 import { FiSearch, FiBell, FiChevronDown, FiMenu, FiCheck, FiCheckCircle, FiClock, FiUserPlus, FiTrash2 } from 'react-icons/fi';
@@ -63,7 +65,13 @@ const DashboardHeader = ({ toggleSidebar }) => {
 
     const unreadCount = notifs.filter((n) => !n.read).length;
 
+    const { data } = useGetProfileQuery();
+    const user = data?.data?.attributes;
+
+
+
     useEffect(() => {
+
         const handleClickOutside = (e) => {
             if (notifRef.current && !notifRef.current.contains(e.target)) {
                 setNotifOpen(false);
@@ -111,9 +119,9 @@ const DashboardHeader = ({ toggleSidebar }) => {
                 <div className='relative' ref={notifRef}>
                     <button
                         onClick={() => setNotifOpen(!notifOpen)}
-                        className='relative w-9 h-9 flex border border-gray-300 items-center justify-center rounded-full hover:bg-gray-200 cursor-pointer transition-colors'
+                        className='relative w-10 h-10 flex border border-primary items-center justify-center rounded-full hover:bg-gray-200 cursor-pointer transition-colors'
                     >
-                        <FiBell className='w-5 h-5 text-[#4da6d6]' />
+                        <FiBell className='w-5 h-5 text-primary' />
                         {unreadCount > 0 && (
                             <span className='absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center'>
                                 {unreadCount}
@@ -203,13 +211,13 @@ const DashboardHeader = ({ toggleSidebar }) => {
                 </div>
 
                 {/* User Profile */}
-                <Link href='/dashboard/setting' className='flex items-center gap-2 cursor-pointer hover:bg-gray-200 rounded-lg px-2 py-1 transition-colors'>
+                <Link href='/dashboard/setting' className='flex items-center gap-2 cursor-pointer hover:bg-blue-200 bg-blue-100 border border-blue-200 rounded-lg px-2 py-1 transition-colors'>
                     <div className='w-9 h-9 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-400 flex-shrink-0 flex items-center justify-center'>
-                        <span className='text-white font-semibold text-sm'>B</span>
+                        <img className='w-full h-cull' src={url + user?.profileImage?.imageUrl} alt="" />
                     </div>
                     <div className='flex flex-col leading-tight'>
-                        <span className='text-sm font-semibold text-gray-800'>Bashar islam</span>
-                        <span className='text-xs text-gray-500'>Primary account</span>
+                        <span className='text-sm font-semibold text-gray-800'>{user?.name}</span>
+                        <span className='text-xs text-gray-500 capitalize'>{user?.role} account</span>
                     </div>
                     <FiChevronDown className='w-4 h-4 text-gray-500 ml-1' />
                 </Link>
