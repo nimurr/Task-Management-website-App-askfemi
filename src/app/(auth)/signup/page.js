@@ -5,10 +5,46 @@ import { FaBrain, FaLock, FaEye, FaEyeSlash, FaPhoneAlt } from 'react-icons/fa';
 import { FaUser } from 'react-icons/fa';
 import { MdOutlineMailOutline } from 'react-icons/md';
 import { FcGoogle } from 'react-icons/fc';
+import { useSignUpMutation } from '@/redux/fetures/auth/signUp';
+import { message } from 'antd';
+import ButtonLoading from '@/Components/Common/ButtonLoading';
+import { toast } from 'react-toastify';
 
 const Page = () => {
+
+    const [signup, { isLoading }] = useSignUpMutation();
+
     const [showPassword, setShowPassword] = useState(false);
     const [agreed, setAgreed] = useState(true);
+
+    const handleSubmitForm = async (e) => {
+        e.preventDefault();
+        const formData = e.target;
+        const name = formData.username.value;
+        const email = formData.email.value;
+        const phone = formData.phone.value;
+        const password = formData.password.value;
+        const data = { name, email, phone, password };
+
+        try {
+            const response = await signup(data);
+            console.log(response);
+             if(response?.error){
+                toast.error(response.error.data.message || 'Something went wrong');
+             }
+             else{
+                toast.success('Registration successful');
+             }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.data.message || 'Something went wrong');
+
+        }
+
+
+
+        console.log(data)
+    }
 
     return (
         <div className="h-screen flex overflow-hidden bg-[#F0F4FA]">
@@ -37,7 +73,7 @@ const Page = () => {
                     <p className="text-gray-500 text-sm mb-5">Hello there, Let's start your journey with us.</p>
 
                     {/* Form */}
-                    <form className="flex flex-col gap-3" onSubmit={e => e.preventDefault()}>
+                    <form className="flex flex-col gap-3" onSubmit={handleSubmitForm}>
 
                         {/* Username */}
                         <div
@@ -144,10 +180,10 @@ const Page = () => {
                         {/* Sign Up Button */}
                         <button
                             type="submit"
-                            className="w-full py-3 rounded-xl text-white text-sm font-semibold transition-opacity hover:opacity-90 active:scale-[0.98] mt-1"
+                            className="w-full py-3 rounded-xl text-white text-sm font-semibold transition-opacity hover:opacity-90 active:scale-[0.98] mt-1 flex items-center justify-center gap-2.5"
                             style={{ background: '#4A90E2' }}
                         >
-                            Sign up
+                            Sign up {isLoading && <ButtonLoading />}
                         </button>
 
                         {/* Google Login */}

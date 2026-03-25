@@ -14,4 +14,4 @@ const signUp = apiSlice.injectEndpoints({
     })
 })
 
-export const {useSignUpMutation} = signUp;
+export const { useSignUpMutation } = signUp;
