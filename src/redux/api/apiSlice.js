@@ -6,7 +6,7 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: url + "/api/v1",
     prepareHeaders: (headers, { getState }) => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token") ? JSON.parse(localStorage.getItem("token")) : null;
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
         const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;

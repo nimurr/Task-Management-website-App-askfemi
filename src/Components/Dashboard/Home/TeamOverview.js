@@ -1,6 +1,10 @@
+'use client';
 import React from 'react';
 import { FiUser } from 'react-icons/fi';
 import { FaCrown, FaRegUserCircle } from 'react-icons/fa';
+import { useGetTeamOverviewQuery } from '@/redux/fetures/teamoverview/teamoverview';
+import url from '@/redux/api/baseUrl';
+import CardLoading from '@/Components/Common/CardLoading';
 
 const members = [
     {
@@ -51,12 +55,15 @@ const members = [
 ];
 
 const MemberCard = ({ member }) => {
+
+
+
     return (
         <div className='bg-white rounded-2xl overflow-hidden flex shadow-sm border border-gray-100'>
             {/* Left: Image */}
             <img
-                src={member.img}
-                alt={member.name}
+                src={url + member?.profileImage?.imageUrl}
+                alt={member?.childName}
                 className='w-32 h-full object-cover flex-shrink-0'
                 style={{ minHeight: '160px', maxHeight: '180px' }}
             />
@@ -65,8 +72,8 @@ const MemberCard = ({ member }) => {
             <div className='flex flex-col flex-1 px-4 py-3'>
                 {/* Name + Badge */}
                 <div className='flex items-center justify-between mb-3'>
-                    <h3 className='font-bold text-gray-900 text-lg'>{member.name}</h3>
-                    {member.isPrimary ? (
+                    <h3 className='font-bold text-gray-900 text-lg'>{member?.childName}</h3>
+                    {member?.isPrimaryUser ? (
                         <span className='flex items-center gap-1 bg-blue-100 text-blue-600 text-xs font-semibold px-3 py-2 rounded-full'>
                             <FaCrown size={15} className='text-yellow-400' />
                             Primary account
@@ -86,15 +93,19 @@ const MemberCard = ({ member }) => {
                 <div className='flex flex-col gap-1.5'>
                     <div className='flex justify-between text-sm text-gray-500'>
                         <span>Total Task :</span>
-                        <span className='font-bold text-gray-800'>{member.totalTask}</span>
+                        <span className='font-bold text-gray-800'>{member?.totalTasks}</span>
+                    </div>
+                    <div className='flex justify-between text-sm text-gray-500'>
+                        <span>In Progress Task :</span>
+                        <span className='font-bold text-gray-800'>{member?.inProgressTasks}</span>
                     </div>
                     <div className='flex justify-between text-sm text-gray-500'>
                         <span>Pending Task :</span>
-                        <span className='font-bold text-gray-800'>{member.pendingTask}</span>
+                        <span className='font-bold text-gray-800'>{member?.pendingTasks}</span>
                     </div>
                     <div className='flex justify-between text-sm text-gray-500'>
                         <span>Completed Task :</span>
-                        <span className='font-bold text-gray-800'>{member.completedTask}</span>
+                        <span className='font-bold text-gray-800'>{member?.completedTasks}</span>
                     </div>
                 </div>
             </div>
@@ -103,6 +114,14 @@ const MemberCard = ({ member }) => {
 };
 
 const TeamOverview = () => {
+
+    const { data, isLoading } = useGetTeamOverviewQuery();
+    const members = data?.data?.attributes?.children || [];
+    const withMyInfo = [data?.data?.attributes?.parentInfo, ...members]
+
+    console.log(withMyInfo)
+
+
     return (
         <div className='bg-gray-100 rounded-lg p-8'>
             {/* Header */}
@@ -112,15 +131,20 @@ const TeamOverview = () => {
                     <p className='text-gray-400 text-sm mt-1'>Manage tasks and activities for your family</p>
                 </div>
                 <span className='text-sm font-bold text-gray-800 mt-2'>
-                    Total 0{members.length} Member
+                    Total {withMyInfo.length > 9 ? '9+' : "0" + withMyInfo.length || 0} Member
                 </span>
             </div>
 
             {/* Grid */}
             <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-                {members.map((member, index) => (
-                    <MemberCard key={index} member={member} />
-                ))}
+                {
+                    isLoading ? [...Array(3)].map((item, index) => (
+                        <CardLoading key={index} />
+                    )) :
+                        withMyInfo?.map((member, index) => (
+                            <MemberCard key={index} member={member} />
+                        ))
+                }
             </div>
         </div>
     );
