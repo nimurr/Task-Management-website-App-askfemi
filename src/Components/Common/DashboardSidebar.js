@@ -47,9 +47,9 @@ const DashboardSidebar = () => {
                     <Link
                         href={item.path}
                         key={item.name}
-                        className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors text-sm font-medium
+                        className={`flex items-center rounded gap-3 px-4 py-2.5 cursor-pointer transition-colors text-sm font-medium
                             ${isActive(item.path)
-                                ? 'bg-primary text-white border-b-2 border-gray-400'
+                                ? 'bg-primary text-white '
                                 : 'text-gray-600 hover:bg-gray-200'
                             }`}
                     >
@@ -66,15 +66,15 @@ const DashboardSidebar = () => {
                 <p className='font-semibold text-gray-500 mb-3 px-1'>Team Member</p>
                 <div className='flex flex-col gap-5'>
                     {teamMembers.map((member, index) => (
-                        <div key={index} className='flex items-center gap-2'>
+                        <div key={index} className='flex items-center cursor-pointer gap-2'>
                             <img
                                 src={member.img}
                                 alt={member.name}
-                                className='w-10 h-10 rounded-full object-cover flex-shrink-0'
+                                className='w-8 h-8 rounded-full object-cover flex-shrink-0'
                             />
                             <div className='flex flex-col leading-tight'>
-                                <span className='text-[14px] text-gray-400'>{member.tasks}</span>
-                                <span className='font-semibold text-gray-800'>{member.name}</span>
+                                <span className='text-[12px] text-gray-400'>{member.tasks}</span>
+                                <span className='font-semibold text-[14px] text-gray-800'>{member.name}</span>
                             </div>
                         </div>
                     ))}

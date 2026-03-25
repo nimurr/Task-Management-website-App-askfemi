@@ -24,10 +24,10 @@ const Header = () => {
 
         const onScroll = () => setScrolled(window.scrollY > 10);
         window.addEventListener('scroll', onScroll);
-        return () => window.removeEventListener('scroll', onScroll);
         const userInfo = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
         setUser(userInfo);
 
+        return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
     console.log(user)
