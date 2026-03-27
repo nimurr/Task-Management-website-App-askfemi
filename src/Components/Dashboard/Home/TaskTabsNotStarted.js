@@ -1,6 +1,6 @@
 // import React from 'react';
 // import { FiClock } from 'react-icons/fi';
- 
+
 
 // const Divider = () => <hr className='border-dashed border-gray-200 my-3' />;
 
@@ -77,6 +77,7 @@
 
 
 'use client'
+import url from '@/redux/api/baseUrl';
 import React from 'react';
 import { FiClock } from 'react-icons/fi';
 
@@ -162,7 +163,7 @@ const TaskCard = ({ task }) => {
             {/* Assigned By */}
             <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-2'>
-                    <img src={task.assignedByImg} className='w-10 h-10 rounded-full object-cover' />
+                    <img src={url + task.assignedByImg} className='w-10 h-10 rounded-full object-cover' />
                     <div className='flex flex-col leading-tight'>
                         <span className='text-[10px] text-gray-400'>Assigned By</span>
                         <div className='flex items-center gap-2'>
