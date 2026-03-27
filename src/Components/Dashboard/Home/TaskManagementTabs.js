@@ -5,17 +5,23 @@ import TaskTabsNotStarted from './TaskTabsNotStarted';
 import TaskTabsInProgress from './TaskTabsInProgress';
 import TaskTabsComplete from './TaskTabsComplete';
 import TaskTabsPersonal from './TaskTabsPersonal';
+import { useGetTaskManagementTabsQuery } from '@/redux/fetures/taskManagementTabs/taskManagementTabs';
+import CardLoading from '@/Components/Common/CardLoading';
 
 const tabs = [
-    { label: 'All', count: 6 },
-    { label: 'Not Started', count: 1 },
-    { label: 'In Progress', count: 2 },
-    { label: 'Completed', count: 2 },
-    { label: 'Personal Task', count: 0 },
+    { label: 'all', count: 6 },
+    { label: 'pending', count: 1 },
+    { label: 'inProgress', count: 2 },
+    { label: 'completed', count: 2 },
+    { label: 'personal', count: 0 },
 ];
 
 const TaskManagementTabs = () => {
-    const [activeTab, setActiveTab] = useState('All');
+    const [activeTab, setActiveTab] = useState('all');
+    const { data, isLoading } = useGetTaskManagementTabsQuery({ status: activeTab, taskType: 'children' });
+    const allTask = data?.data?.attributes?.tasks;
+
+    console.log(allTask)
 
     return (
         <div className='bg-gray-50 min-h-screen'>
@@ -35,18 +41,36 @@ const TaskManagementTabs = () => {
                                 : 'text-gray-500 hover:bg-gray-200'
                             }`}
                     >
-                        {tab.label} ({tab.count})
+                        {
+                            tab.label === 'all'
+                                ? "All"
+                                : tab.label === 'pending'
+                                    ? "Not Started"
+                                    : tab.label === 'inProgress'
+                                        ? "In Progress"
+                                        : tab.label === 'completed'
+                                            ? "Completed"
+                                            : tab.label === 'personal'
+                                                ? "Personal Task"
+                                                : ''
+                        }
+                        ({activeTab === tab.label ? allTask?.length : '0'})
                     </button>
                 ))}
             </div>
 
             {/* Tab Content */}
-            <div className='mt-6 bg-white rounded-2xl p-6 shadow-sm border border-gray-100'>
-                {activeTab === 'All' && <TaskTabsAll />}
-                {activeTab === 'Not Started' && <TaskTabsNotStarted />}
-                {activeTab === 'In Progress' && <TaskTabsInProgress />}
-                {activeTab === 'Completed' && <TaskTabsComplete />}
-                {activeTab === 'Personal Task' && <TaskTabsPersonal />}
+            <div className='mt-6 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-2'>
+                {
+                    isLoading && [...Array(3)].map((item, index) => (
+                        <CardLoading key={index} />
+                    ))
+                }
+                {activeTab === 'all' && <TaskTabsAll allTask={allTask} />}
+                {activeTab === 'pending' && <TaskTabsNotStarted allTask={allTask} />}
+                {activeTab === 'inProgress' && <TaskTabsInProgress allTask={allTask} />}
+                {activeTab === 'completed' && <TaskTabsComplete allTask={allTask} />}
+                {activeTab === 'personal' && <TaskTabsPersonal allTask={allTask} />}
             </div>
         </div>
     );
