@@ -1,78 +1,32 @@
 'use client';
 import React from 'react';
-import { FiUser } from 'react-icons/fi';
 import { FaCrown, FaRegUserCircle } from 'react-icons/fa';
 import { useGetTeamOverviewQuery } from '@/redux/fetures/teamoverview/teamoverview';
 import url from '@/redux/api/baseUrl';
 import CardLoading from '@/Components/Common/CardLoading';
 
-const members = [
-    {
-        name: 'Alex Morgan',
-        role: 'Primary account',
-        isPrimary: true,
-        totalTask: 12,
-        pendingTask: 10,
-        completedTask: '02',
-        img: 'https://i.pinimg.com/736x/56/03/bc/5603bc412d148a6fb5d03f830b819627.jpg',
-    },
-    {
-        name: 'Jamie Chen',
-        role: 'Secondary',
-        isPrimary: false,
-        totalTask: 12,
-        pendingTask: 0,
-        completedTask: 12,
-        img: 'https://www.shutterstock.com/image-photo/studio-portrait-girl-looking-standing-600nw-2281354333.jpg',
-    },
-    {
-        name: 'Sam Rivera',
-        role: 'Secondary',
-        isPrimary: false,
-        totalTask: '05',
-        pendingTask: '04',
-        completedTask: '01',
-        img: 'https://www.shutterstock.com/image-photo/portrait-wink-black-child-on-600nw-2256248353.jpg',
-    },
-    {
-        name: 'Riley Park',
-        role: 'Secondary',
-        isPrimary: false,
-        totalTask: 10,
-        pendingTask: '08',
-        completedTask: '02',
-        img: 'https://www.shutterstock.com/image-photo/studio-portrait-girl-looking-standing-600nw-2281354333.jpg',
-    },
-    {
-        name: 'Casey Lin',
-        role: 'Secondary',
-        isPrimary: false,
-        totalTask: 10,
-        pendingTask: '08',
-        completedTask: '02',
-        img: 'https://www.shutterstock.com/image-photo/studio-portrait-girl-looking-standing-600nw-2281354333.jpg',
-    },
-];
-
+/* ---------------- MEMBER CARD ---------------- */
 const MemberCard = ({ member }) => {
-
-
-
     return (
         <div className='bg-white rounded-2xl overflow-hidden flex shadow-sm border border-gray-100'>
-            {/* Left: Image */}
+
+            {/* Image */}
             <img
-                src={url + member?.profileImage?.imageUrl}
-                alt={member?.childName}
+                src={member?.profileImage?.imageUrl ? url + member.profileImage.imageUrl : '/default.png'}
+                alt={member?.childName || 'User'}
                 className='w-32 h-full object-cover flex-shrink-0'
                 style={{ minHeight: '160px', maxHeight: '180px' }}
             />
 
-            {/* Right: Info */}
+            {/* Info */}
             <div className='flex flex-col flex-1 px-4 py-3'>
+
                 {/* Name + Badge */}
                 <div className='flex items-center justify-between mb-3'>
-                    <h3 className='font-bold text-gray-900 text-lg'>{member?.childName}</h3>
+                    <h3 className='font-bold text-gray-900 text-lg'>
+                        {member?.childName || member?.name || 'Unknown'}
+                    </h3>
+
                     {member?.isPrimaryUser ? (
                         <span className='flex items-center gap-1 bg-blue-100 text-blue-600 text-xs font-semibold px-3 py-2 rounded-full'>
                             <FaCrown size={15} className='text-yellow-400' />
@@ -93,19 +47,19 @@ const MemberCard = ({ member }) => {
                 <div className='flex flex-col gap-1.5'>
                     <div className='flex justify-between text-sm text-gray-500'>
                         <span>Total Task :</span>
-                        <span className='font-bold text-gray-800'>{member?.totalTasks}</span>
+                        <span className='font-bold text-gray-800'>{member?.totalTasks || 0}</span>
                     </div>
                     <div className='flex justify-between text-sm text-gray-500'>
                         <span>In Progress Task :</span>
-                        <span className='font-bold text-gray-800'>{member?.inProgressTasks}</span>
+                        <span className='font-bold text-gray-800'>{member?.inProgressTasks || 0}</span>
                     </div>
                     <div className='flex justify-between text-sm text-gray-500'>
                         <span>Pending Task :</span>
-                        <span className='font-bold text-gray-800'>{member?.pendingTasks}</span>
+                        <span className='font-bold text-gray-800'>{member?.pendingTasks || 0}</span>
                     </div>
                     <div className='flex justify-between text-sm text-gray-500'>
                         <span>Completed Task :</span>
-                        <span className='font-bold text-gray-800'>{member?.completedTasks}</span>
+                        <span className='font-bold text-gray-800'>{member?.completedTasks || 0}</span>
                     </div>
                 </div>
             </div>
@@ -113,38 +67,58 @@ const MemberCard = ({ member }) => {
     );
 };
 
+/* ---------------- MAIN COMPONENT ---------------- */
 const TeamOverview = () => {
 
     const { data, isLoading } = useGetTeamOverviewQuery();
+
     const members = data?.data?.attributes?.children || [];
-    const withMyInfo = [data?.data?.attributes?.parentInfo, ...members]
 
-    console.log(withMyInfo)
+    // ✅ FIX: remove undefined/null
+    const withMyInfo = [
+        data?.data?.attributes?.parentInfo,
+        ...members
+    ].filter(Boolean);
 
+    const totalMembers = withMyInfo.length;
 
     return (
         <div className='bg-gray-100 rounded-lg p-8'>
+
             {/* Header */}
             <div className='flex items-start justify-between mb-6'>
                 <div>
                     <h1 className='text-3xl font-bold text-gray-900'>Team Overview</h1>
-                    <p className='text-gray-400 text-sm mt-1'>Manage tasks and activities for your family</p>
+                    <p className='text-gray-400 text-sm mt-1'>
+                        Manage tasks and activities for your family
+                    </p>
                 </div>
+
                 <span className='text-sm font-bold text-gray-800 mt-2'>
-                    Total {withMyInfo.length > 9 ? '9+' : "0" + withMyInfo.length || 0} Member
+                    Total {totalMembers > 9 ? '9+' : totalMembers} Member
                 </span>
             </div>
 
             {/* Grid */}
             <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-                {
-                    isLoading ? [...Array(3)].map((item, index) => (
+
+                {isLoading
+                    ? [...Array(3)].map((_, index) => (
                         <CardLoading key={index} />
-                    )) :
-                        withMyInfo?.map((member, index) => (
+                    ))
+                    : withMyInfo.length > 0
+                        ? withMyInfo.map((member, index) => (
                             <MemberCard key={index} member={member} />
                         ))
+                        : (
+                            <p className='text-center col-span-3 text-gray-400'>
+                               
+                                 <img className='w-[200px] block mx-auto mb-5' src="https://www.pngexpert.com/assets/images/empty_message.png" alt="" />
+                                  No members found
+                            </p>
+                        )
                 }
+
             </div>
         </div>
     );
