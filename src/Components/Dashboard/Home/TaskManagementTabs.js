@@ -139,12 +139,13 @@ const TaskManagementTabs = () => {
     const [activeTab, setActiveTab] = useState('all');
 
     const { data, isLoading } = useGetTaskManagementTabsQuery({
-        status: activeTab,
+        status: type == 'personal' ? 'all' : activeTab,
         taskType: type
     });
 
     const allTask = data?.data?.attributes?.tasks || [];
     const counts = data?.data?.attributes?.counts || {};
+
 
 
 
@@ -172,7 +173,7 @@ const TaskManagementTabs = () => {
                     <button
                         key={tab.label}
                         onClick={() => {
-                            setActiveTab(tab.label == "personal" ? "all" : tab.label);
+                            setActiveTab(tab.label);
                             setType(tab.label === 'personal' ? 'personal' : 'children');
                         }}
                         className={`px-4 py-1.5 rounded-t-lg text-sm font-medium transition-colors cursor-pointer

@@ -8,7 +8,13 @@ const taskManagementTabs = apiSlice.injectEndpoints({
                 method: "GET",
             })
         }),
+        getAllLiveActivity: builder.query({
+            query: () =>  ({
+                url: `/notifications/dashboard/activity-feed`,
+                method: "GET",
+            })
+        }),
     }),
 });
 
-export const { useGetTaskManagementTabsQuery } = taskManagementTabs;
+export const { useGetTaskManagementTabsQuery , useGetAllLiveActivityQuery } = taskManagementTabs;

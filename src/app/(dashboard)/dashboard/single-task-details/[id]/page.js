@@ -1,7 +1,9 @@
 'use client'
+import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
 import { FaCrown } from 'react-icons/fa';
 import { FiCalendar, FiChevronDown } from 'react-icons/fi';
+import { IoArrowBack } from 'react-icons/io5';
 
 const modes = [
     { label: 'Calm', emoji: '😌' },
@@ -39,7 +41,7 @@ const Page = () => {
         <div className='bg-gray-100 rounded-lg p-5'>
 
             {/* Title */}
-            <h1 className='text-2xl font-bold text-gray-900 mb-6'>Tasks details</h1>
+            <Link href="/dashboard" className='text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2 '><IoArrowBack /> Tasks details</Link>
 
             {/* Top Card — User + Support Mode */}
             <div className='bg-white rounded-2xl p-5 border border-gray-100 shadow-sm mb-4'>

@@ -1,5 +1,6 @@
 'use client'
 import url from '@/redux/api/baseUrl';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FiClock, FiMoreHorizontal } from 'react-icons/fi';
 
@@ -21,11 +22,15 @@ const Divider = () => <hr className='border-dashed border-gray-200 my-3' />;
 /* ---------------- TASK CARD ---------------- */
 const TaskCard = ({ task }) => {
 
+    const router = useRouter();
+
+
     const handleGotaskDetials = () => {
-        if (task.taskType === 'Group Tasks') {
-            window.location.href = '/dashboard/group-task-details';
+
+        if (task.taskType !== 'Single Task') {
+            router.push(`/dashboard/group-task-details/${task.id}`);
         } else {
-            window.location.href = '/dashboard/single-task-details';
+            router.push(`/dashboard/single-task-details/${task.id}`);
         }
     };
 

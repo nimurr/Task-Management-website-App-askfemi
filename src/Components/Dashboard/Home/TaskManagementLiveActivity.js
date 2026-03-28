@@ -1,15 +1,12 @@
 'use client'
+import url from '@/redux/api/baseUrl';
+import { useGetAllLiveActivityQuery } from '@/redux/fetures/taskManagementTabs/taskManagementTabs';
 import React, { useState } from 'react';
-
-const activities = [
-    { name: 'Alax Morgn', description: 'Jamie Chen completed "Complete math homework"', time: '2 minutes ago', img: 'https://i.pravatar.cc/40?img=11' },
-    { name: 'Alax Morgn', description: 'Jamie Chen completed "Complete math homework"', time: '2 minutes ago', img: 'https://i.pravatar.cc/40?img=11' },
-    { name: 'Alax Morgn', description: 'Jamie Chen completed "Complete math homework"', time: '2 minutes ago', img: 'https://i.pravatar.cc/40?img=11' },
-    { name: 'Alax Morgn', description: 'Jamie Chen completed "Complete math homework"', time: '2 minutes ago', img: 'https://i.pravatar.cc/40?img=11' },
-];
 
 const TaskManagementLiveActivity = () => {
     const [permissionEnabled, setPermissionEnabled] = useState(true);
+    const { data } = useGetAllLiveActivityQuery();
+    const activityData = data?.data?.attributes; // assuming this contains the array of activities
 
     return (
         <div className='flex flex-col gap-4'>
@@ -22,25 +19,51 @@ const TaskManagementLiveActivity = () => {
                         <h2 className='text-xl font-bold text-gray-900'>Live Activity</h2>
                         <p className='text-gray-400 text-xs mt-0.5'>Real-time updates from family</p>
                     </div>
-                    <span className='text-gray-400 font-medium text-sm'>(0{activities.length})</span>
+                    <span className='text-gray-400 font-medium text-sm'>
+                        ({activityData?.length || 0})
+                    </span>
                 </div>
 
                 {/* Activity List */}
                 <div className='flex flex-col gap-4'>
-                    {activities.map((activity, index) => (
-                        <div key={index} className='flex items-start gap-3'>
-                            <img
-                                src={activity.img}
-                                alt={activity.name}
-                                className='w-10 h-10 rounded-full object-cover flex-shrink-0'
-                            />
+                    {activityData?.map((activity) => (
+                        <div key={activity._id} className='flex items-start gap-3'>
+                            {/* Actor Image */}
+                            {activity.actor?.profileImage && (
+                                <img
+                                    src={url + activity.actor.profileImage}
+                                    alt={activity.actor.name}
+                                    className='w-10 h-10 rounded-full object-cover flex-shrink-0'
+                                />
+                            )}
+
+                            {/* Activity Info */}
                             <div className='flex flex-col'>
-                                <span className='font-semibold text-gray-900 text-sm'>{activity.name}</span>
-                                <span className='text-gray-500 text-xs'>{activity.description}</span>
-                                <span className='text-gray-400 text-xs mt-0.5'>{activity.time}</span>
+                                {activity.actor?.name && (
+                                    <span className='font-semibold text-gray-900 text-sm'>
+                                        {activity.actor.name}
+                                    </span>
+                                )}
+                                {activity.task?.title && (
+                                    <span className='text-gray-700 text-sm'>
+                                        {activity.task.title}
+                                    </span>
+                                )}
+                                {activity.message && (
+                                    <span className='text-gray-500 text-xs'>{activity.message}</span>
+                                )}
+                                {activity.timeAgo && (
+                                    <span className='text-gray-400 text-xs mt-0.5'>
+                                        {activity.timeAgo}
+                                    </span>
+                                )}
                             </div>
                         </div>
                     ))}
+
+                    {!activityData?.length && (
+                        <p className='text-center text-gray-400 py-5'>No live activity yet.</p>
+                    )}
                 </div>
             </div>
 
@@ -53,7 +76,9 @@ const TaskManagementLiveActivity = () => {
                 <div className='flex items-start justify-between mb-5'>
                     <div>
                         <p className='text-sm font-semibold text-gray-800'>Allow Secondary users to create tasks</p>
-                        <p className='text-xs text-gray-400 mt-0.5'>Secondary users can create and assign tasks to others</p>
+                        <p className='text-xs text-gray-400 mt-0.5'>
+                            Secondary users can create and assign tasks to others
+                        </p>
                     </div>
                     {/* Toggle */}
                     <button
@@ -68,10 +93,9 @@ const TaskManagementLiveActivity = () => {
                     </button>
                 </div>
 
-                {/* Divider */}
                 <hr className='border-gray-100 mb-4' />
 
-                {/* User Row */}
+                {/* Example User */}
                 <div className='flex items-center justify-between'>
                     <div className='flex items-center gap-2'>
                         <div className='relative'>
@@ -96,7 +120,6 @@ const TaskManagementLiveActivity = () => {
                     </button>
                 </div>
             </div>
-
         </div>
     );
 };

@@ -1,5 +1,7 @@
+import Link from 'next/link';
 import React from 'react';
 import { FiCalendar } from 'react-icons/fi';
+import { IoArrowBack } from 'react-icons/io5';
 
 const assignedMembers = [
     { name: 'Alax Morgn', status: 'In Progress', img: 'https://i.pravatar.cc/40?img=11' },
@@ -28,7 +30,8 @@ const Page = () => {
         <div className='bg-gray-100 rounded-lg p-5'>
 
             {/* Title */}
-            <h1 className='text-2xl font-bold text-gray-900 mb-6'>Tasks details</h1>
+            <Link href="/dashboard" className='text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2 '><IoArrowBack /> Tasks details</Link>
+
 
             {/* Assigned All Card */}
             <div className='bg-white rounded-2xl p-5 border border-gray-100 shadow-sm mb-4'>
