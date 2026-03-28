@@ -1,37 +1,9 @@
+'use client'
+import url from '@/redux/api/baseUrl';
 import React from 'react';
 import { FiClock, FiMoreHorizontal } from 'react-icons/fi';
 
-const tasks = [
-    {
-        id: 1,
-        title: 'Complete Math Homework',
-        status: 'In Progress',
-        startDate: '12/10/2026 – 08:30 AM',
-        description: 'Finish exercises 1–10 from chapter 5 This call is scheduled to align the design team on current progress, clarify open points,Finish exercises 1–10 from chapter 5 This call is scheduled to align the design team on current progress.',
-        subTasks: ['Call with design team', 'Review project milestones', 'Update client on progress'],
-        assignedAll: [
-            { name: 'Alax Morgn', status: 'Not Started', img: 'https://i.pravatar.cc/40?img=11' },
-            { name: 'Sam Rivera', status: 'In Progress', img: 'https://i.pravatar.cc/40?img=47' },
-            { name: 'Jamie Chen', status: 'Completed', img: 'https://i.pravatar.cc/40?img=53' },
-        ],
-        taskType: 'Group Tasks',
-    },
-    {
-        id: 2,
-        title: 'Complete Math Homework',
-        status: 'In Progress',
-        startDate: '12/10/2026 – 08:30 AM',
-        description: 'Finish exercises 1–10 from chapter 5 This call is scheduled to align the design team on current progress, clarify open points,Finish exercises 1–10 from chapter 5 This call is scheduled to align the design team on current progress.',
-        subTasks: ['Call with design team', 'Review project milestones', 'Update client on progress'],
-        assignedAll: [
-            { name: 'Alax Morgn', status: 'Not Started', img: 'https://i.pravatar.cc/40?img=11' },
-            { name: 'Sam Rivera', status: 'In Progress', img: 'https://i.pravatar.cc/40?img=47' },
-            { name: 'Jamie Chen', status: 'Completed', img: 'https://i.pravatar.cc/40?img=53' },
-        ],
-        taskType: 'Group Tasks',
-    },
-];
-
+/* ---------------- STATUS STYLE ---------------- */
 const memberStatusStyles = {
     'Not Started': 'bg-gray-100 text-gray-500 text-[10px] px-2 py-0.5 rounded-full',
     'In Progress': 'bg-blue-100 text-blue-600 text-[10px] px-2 py-0.5 rounded-full',
@@ -40,22 +12,66 @@ const memberStatusStyles = {
 
 const Divider = () => <hr className='border-dashed border-gray-200 my-3' />;
 
+/* ---------------- STATUS CONVERTER ---------------- */
+const getStatus = (status) => {
+    switch (status) {
+        case "pending":
+            return "Not Started";
+        case "inProgress":
+            return "In Progress";
+        case "all-completed":
+            return "Completed";
+        default:
+            return "Not Started";
+    }
+};
+
+/* ---------------- FORMAT FUNCTION ---------------- */
+const formatTask = (task) => {
+    return {
+        id: task._id,
+        title: task.title,
+        description: task.description,
+
+        status: getStatus(task.status),
+
+        startDate: new Date(task.startTime).toLocaleString(),
+
+        subTasks: task.subtasks || [],
+
+        assignedAll: task.assignedTo?.map((user, index) => ({
+            name: user.name || `User ${index + 1}`,
+            img: user.profileImage || "/uploads/users/user.png",
+            status: getStatus(task.status),
+        })) || [],
+
+        taskType:
+            task.taskType === "collaborative"
+                ? "Group Tasks"
+                : "Single Task",
+    };
+};
+
+/* ---------------- TASK CARD ---------------- */
 const TaskCard = ({ task }) => {
 
     const handleGotaskDetials = () => {
         if (task.taskType === 'Group Tasks') {
-            window.location.href = '/dashboard/group-task-details';
-        }
-        else {
-            window.location.href = '/dashboard/single-task-details';
+            window.location.href = `/dashboard/group-task-details/${task.id}`;
+        } else {
+            window.location.href = `/dashboard/single-task-details/${task.id}`;
         }
     };
 
+
+    console.log(task)
+
     return (
         <div onClick={handleGotaskDetials} className='bg-white cursor-pointer rounded-2xl p-5 shadow-sm border border-gray-100'>
+
             {/* Title + Status */}
             <div className='flex items-center justify-between mb-1'>
-                <h2 className='text-lg font-bold text-gray-900'>{task.title}</h2>
+                <h2 className='text-lg font-bold text-gray-900 capitalize'>{task.title}</h2>
                 <span className='text-xs font-semibold px-3 py-1 rounded-lg bg-blue-100 text-blue-600'>
                     {task.status}
                 </span>
@@ -82,12 +98,15 @@ const TaskCard = ({ task }) => {
             {/* Sub Tasks */}
             <div className='bg-blue-50 rounded-lg px-4 py-2 mb-3'>
                 <span className='text-sm font-semibold text-blue-700'>
-                    Sub-Tasks (0{task.subTasks.length})
+                    Sub-Tasks ({task?.subTasks?.length})
                 </span>
             </div>
+
             <ol className='list-decimal list-inside flex flex-col gap-1 mb-3 px-1'>
-                {task.subTasks.map((sub, i) => (
-                    <li key={i} className='text-sm text-gray-600'>{sub}</li>
+                {task.subtasks?.map((sub, i) => (
+                    <li key={i} className='text-sm text-gray-600'>
+                        {sub.title || sub}
+                    </li>
                 ))}
             </ol>
 
@@ -97,22 +116,56 @@ const TaskCard = ({ task }) => {
             <div className='flex items-end justify-between'>
                 <div className='flex flex-col gap-2'>
                     <span className='text-sm font-semibold text-gray-800'>Assigned all</span>
+
                     <div className='flex items-center gap-4'>
-                        {task.assignedAll.map((member, i) => (
+                        {task?.assignedTo?.map((member, i) => (
                             <div key={i} className='flex flex-col items-center gap-1'>
                                 <div className='flex items-center gap-1.5'>
-                                    <img src={member.img} alt={member.name} className='w-8 h-8 rounded-full object-cover' />
-                                    <span className='text-sm font-medium text-gray-800'>{member.name}</span>
+                                    <img
+                                        src={url + member.profileImage}
+                                        alt={member.name}
+                                        className='w-8 h-8 rounded-full object-cover'
+                                    />
+                                    <span className='text-sm font-medium text-gray-800'>
+                                        {member.name}
+                                    </span>
                                 </div>
-                                <span className={memberStatusStyles[member.status]}>{member.status}</span>
+
+                                <span className={memberStatusStyles[
+                                    member?.progress?.status === "pending"
+                                        ? "Not Started"
+                                        : member?.progress?.status === "inProgress"
+                                            ? "In Progress"
+                                            : "Completed"
+                                ]}>
+                                    {
+                                        member?.progress?.status === "pending" || member?.progress?.status === "notStarted"
+                                            ? "Not Started"
+                                            : member?.progress?.status === "inProgress"
+                                                ? "In Progress"
+                                                : "Completed"
+                                    }
+                                </span>
+                                {/* Progress Bar */}
+                                <span className="w-20 bg-gray-500 h-1 rounded-full block">
+                                    <span
+                                        className="bg-blue-500 h-1 rounded-full block transition-all duration-500"
+                                        style={{ width: `${member?.progress?.progressPercentage || 0}%` }}
+                                    ></span>
+                                </span>
                             </div>
                         ))}
                     </div>
                 </div>
+
                 <div className='flex flex-col items-end gap-1'>
                     <span className='text-xs text-gray-400'>Task Type</span>
+
                     <div className='flex items-center gap-2'>
-                        <span className='text-sm font-semibold text-gray-800'>{task.taskType}</span>
+                        <span className='text-sm font-semibold text-gray-800'>
+                            {task.taskType}
+                        </span>
+
                         <button className='text-gray-400 hover:text-gray-600 transition-colors cursor-pointer'>
                             <FiMoreHorizontal size={18} />
                         </button>
@@ -123,10 +176,14 @@ const TaskCard = ({ task }) => {
     );
 };
 
-const TaskTabsInProgress = () => {
+/* ---------------- MAIN COMPONENT ---------------- */
+const TaskTabsInProgress = ({ allTask }) => {
+
+
+
     return (
         <div className='flex flex-col gap-4'>
-            {tasks.map((task) => (
+            {allTask?.map((task) => (
                 <TaskCard key={task.id} task={task} />
             ))}
         </div>

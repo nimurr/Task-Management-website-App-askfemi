@@ -181,8 +181,10 @@ const TaskCard = ({ task }) => {
     );
 };
 
-const TaskTabsPersonal = () => {
+const TaskTabsPersonal = ({allTask}) => {
     const [activeTab, setActiveTab] = useState('my-created');
+
+    console.log(allTask)
 
     const tabs = [
         { id: 'my-created', label: 'My Create Tasks' },

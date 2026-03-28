@@ -136,7 +136,7 @@ const TaskCard = ({ task }) => {
 
             {/* Title + Status */}
             <div className='flex items-center justify-between mb-1'>
-                <h2 className='text-lg font-bold text-gray-900'>{task.title}</h2>
+                <h2 className='text-lg font-bold text-gray-900 capitalize'>{task.title}</h2>
                 <span className='text-xs font-semibold px-3 py-1 rounded-lg bg-gray-100 text-gray-600'>
                     {task.status}
                 </span>
