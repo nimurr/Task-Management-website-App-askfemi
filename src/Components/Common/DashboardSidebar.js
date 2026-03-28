@@ -6,6 +6,7 @@ import { RiDashboardFill } from 'react-icons/ri';
 import { LuClipboardList } from 'react-icons/lu';
 import { FiUsers, FiSettings } from 'react-icons/fi';
 import { MdCardMembership } from 'react-icons/md';
+import { IoIosLogOut } from 'react-icons/io';
 
 const menuItems = [
     { name: 'Dashboard', icon: <RiDashboardFill size={24} />, path: '/dashboard' },
@@ -95,7 +96,7 @@ const DashboardSidebar = () => {
                         onClick={() => setShowModal(true)}
                         className='flex items-center justify-center w-[90%] mx-auto mt-5 bg-red-500 text-white gap-2 px-3 py-2 rounded text-sm font-medium transition-colors cursor-pointer hover:bg-red-600'
                     >
-                        Logout
+                        Logout <IoIosLogOut />
                     </button>
                 </div>
             </div>

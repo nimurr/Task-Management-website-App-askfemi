@@ -1,15 +1,17 @@
 'use client'
+import CardLoading from '@/Components/Common/CardLoading';
 import url from '@/redux/api/baseUrl';
 import { useGetAllLiveActivityQuery } from '@/redux/fetures/taskManagementTabs/taskManagementTabs';
 import React, { useState } from 'react';
 
 const TaskManagementLiveActivity = () => {
     const [permissionEnabled, setPermissionEnabled] = useState(true);
-    const { data } = useGetAllLiveActivityQuery();
+    const { data, isLoading } = useGetAllLiveActivityQuery();
     const activityData = data?.data?.attributes; // assuming this contains the array of activities
 
     return (
         <div className='flex flex-col gap-4'>
+
 
             {/* Live Activity Card */}
             <div className='bg-white rounded-2xl p-5 shadow-sm border border-gray-100'>
@@ -22,6 +24,14 @@ const TaskManagementLiveActivity = () => {
                     <span className='text-gray-400 font-medium text-sm'>
                         ({activityData?.length || 0})
                     </span>
+                </div>
+                <div className='space-y-3'>
+
+                    {
+                        isLoading && [...Array(3)].map((item, index) => (
+                            <CardLoading key={index} />
+                        ))
+                    }
                 </div>
 
                 {/* Activity List */}
