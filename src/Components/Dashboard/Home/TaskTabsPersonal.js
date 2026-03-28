@@ -193,6 +193,9 @@ const Divider = () => <hr className='border-dashed border-gray-200 my-3' />;
 
 const TaskCard = ({ task }) => {
 
+  
+
+
     const handleGoTaskDetails = () => {
         if (task.taskType === 'Group Tasks') {
             window.location.href = '/dashboard/group-task-details';
@@ -208,74 +211,74 @@ const TaskCard = ({ task }) => {
         >
             {/* Owner + Title */}
             <div className='flex items-center gap-3 mb-3'>
-                {task.owner?.profileImage && (
+                {task?.createdBy && (
                     <img
-                        src={url + task.owner.profileImage}
+                        src={url + task.createdBy?.profileImage}
                         alt='Owner'
                         className='w-12 h-12 rounded-full object-cover'
                     />
                 )}
                 <h2 className='text-lg font-bold text-gray-900'>
-                    {task.title || 'No Title'}
+                    {task?.title || 'No Title'}
                 </h2>
             </div>
 
             {/* Status */}
-            {task.status && (
+            {task?.status && (
                 <div className='mb-3'>
                     <span
-                        className={`text-xs font-semibold px-3 py-1 rounded-lg ${statusBadgeStyles[task.status.toLowerCase()] || 'bg-gray-100 text-gray-600'
+                        className={`text-xs font-semibold px-3 py-1 rounded-lg ${statusBadgeStyles[task?.status.toLowerCase()] || 'bg-gray-100 text-gray-600'
                             }`}
                     >
-                        {task.status}
+                        {task?.status}
                     </span>
                 </div>
             )}
 
             {/* Start Time */}
-            {task.startTime && (
+            {task?.startTime && (
                 <>
                     <div className='flex items-center gap-1.5 text-sm text-gray-700 font-medium mb-3'>
                         <FiClock size={15} className='text-gray-400' />
-                        <span>{new Date(task.startTime).toLocaleString()}</span>
+                        <span>{new Date(task?.startTime).toLocaleString()}</span>
                     </div>
                     <Divider />
                 </>
             )}
 
             {/* Scheduled Time */}
-            {task.scheduledTime && (
+            {task?.scheduledTime && (
                 <div className='text-sm text-gray-500 mb-3'>
-                    Scheduled Time: {task.scheduledTime}
+                    Scheduled Time: {task?.scheduledTime}
                 </div>
             )}
 
             {/* Due Date */}
-            {task.dueDate && (
+            {task?.dueDate && (
                 <div className='text-sm text-gray-500 mb-3'>
-                    Due Date: {new Date(task.dueDate).toLocaleDateString()}
+                    Due Date: {new Date(task?.dueDate).toLocaleDateString()}
                 </div>
             )}
 
             {/* Description */}
-            {task.description && (
+            {task?.description && (
                 <>
-                    <p className='text-sm text-gray-500 leading-relaxed mb-3'>{task.description}</p>
+                    <p className='text-sm text-gray-500 leading-relaxed mb-3'>{task?.description}</p>
                     <Divider />
                 </>
             )}
 
             {/* Subtasks */}
-            {task.subtasks && task.subtasks.length > 0 && (
+            {task?.subtasks && task?.subtasks?.length > 0 && (
                 <>
                     <div className={`rounded-lg px-4 py-2 mb-3 ${subTaskHeaderStyles[task.status?.toLowerCase()]}`}>
                         <span className='text-sm font-semibold'>
-                            Sub-Tasks ({task.subtasks.length})
+                            Sub-Tasks ({task?.subtasks.length})
                         </span>
                     </div>
                     <ol className='list-decimal list-inside flex flex-col gap-1 mb-3 px-1'>
-                        {task.subtasks.map((sub, i) => (
-                            <li key={i} className='text-sm text-gray-600'>{sub}</li>
+                        {task?.subtasks.map((sub, i) => (
+                            <li key={i} className='text-sm text-gray-600'>{sub?.title}</li>
                         ))}
                     </ol>
                     <Divider />
@@ -283,19 +286,19 @@ const TaskCard = ({ task }) => {
             )}
 
             {/* Priority */}
-            {task.priority && (
+            {task?.priority && (
                 <div className='flex items-center justify-between mb-2'>
                     <span className='text-sm text-gray-500'>Priority:</span>
-                    <span className='text-sm font-semibold text-gray-800 capitalize'>{task.priority}</span>
+                    <span className='text-sm font-semibold text-gray-800 capitalize'>{task?.priority}</span>
                 </div>
             )}
 
             {/* Completed Subtasks */}
-            {task.completedSubtasks !== undefined && task.totalSubtasks !== undefined && (
+            {task?.completedSubtasks !== undefined && task?.totalSubtasks !== undefined && (
                 <div className='flex items-center justify-between'>
                     <span className='text-sm text-gray-500'>Completed Subtasks:</span>
                     <span className='text-sm font-semibold text-gray-800'>
-                        {task.completedSubtasks} / {task.totalSubtasks}
+                        {task?.completedSubtasks} / {task?.totalSubtasks}
                     </span>
                 </div>
             )}
@@ -306,14 +309,15 @@ const TaskCard = ({ task }) => {
 const TaskTabsPersonal = ({ allTask }) => {
     const [activeTab, setActiveTab] = useState('my-created');
 
+
+    console.log(allTask)
+
+
     const tabs = [
         { id: 'my-created', label: 'My Created Tasks' },
         { id: 'assigned-to-me', label: 'Assigned to Me' },
     ];
 
-    const currentTasks = allTask?.filter(task =>
-        activeTab === 'my-created' ? task.owner : task.assignedTo
-    );
 
     return (
         <div className='flex flex-col gap-4'>
@@ -332,8 +336,8 @@ const TaskTabsPersonal = ({ allTask }) => {
             </div>
 
             {/* Task Cards */}
-            {currentTasks?.length > 0 ? (
-                currentTasks.map(task => (
+            {allTask?.length > 0 ? (
+                allTask?.map(task => (
                     <TaskCard key={task._id} task={task} />
                 ))
             ) : (

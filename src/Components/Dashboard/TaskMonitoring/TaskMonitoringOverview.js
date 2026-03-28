@@ -1,20 +1,37 @@
+'use client';
 import React from 'react';
-import {  LuCrown } from 'react-icons/lu';
+import { LuCrown } from 'react-icons/lu';
 import { CiBookmark } from "react-icons/ci";
 import { BsListCheck } from "react-icons/bs";
 import { TiDocumentText } from "react-icons/ti";
 import { FaRegUserCircle } from 'react-icons/fa';
 import Link from 'next/link';
-
-
-const stats = [
-    { label: 'Not Started Tasks', count: '04', icon: <CiBookmark size={25} className='text-blue-500' /> },
-    { label: 'In Progress', count: '04', icon: <BsListCheck  size={25} className='text-blue-500' /> },
-    { label: 'My Tasks', count: '04', icon: <TiDocumentText  size={27} className='text-blue-500' /> },
-    { label: 'Completed Tasks', count: '04', icon: <FaRegUserCircle  size={25} className='text-blue-500' /> },
-];
+import { useGetAllOverviewQuery } from '@/redux/fetures/taskMonitoring/taskMonitoring';
+import CardLoading from '@/Components/Common/CardLoading';
 
 const TaskMonitoringOverview = () => {
+    const { data, isLoading } = useGetAllOverviewQuery();
+    const overview = data?.data?.attributes;
+
+    // Show placeholder if loading
+    if (isLoading || !overview) {
+        return (
+            <div className='p-5 bg-gray-100 rounded-lg grid grid-cols-2 lg:grid-cols-4 gap-4'>
+                {[...Array(4)].map((_, i) => (
+                    <CardLoading key={i} />
+                ))}
+            </div>
+        );
+    }
+
+    // Map API data to stats cards
+    const stats = [
+        { label: 'Not Started Tasks', count: overview.notStartedTasks || 0, icon: <CiBookmark size={25} className='text-blue-500' /> },
+        { label: 'In Progress', count: overview.inProgressTasks || 0, icon: <BsListCheck size={25} className='text-blue-500' /> },
+        { label: 'My Tasks', count: overview.myTasks || 0, icon: <TiDocumentText size={27} className='text-blue-500' /> },
+        { label: 'Completed Tasks', count: overview.completedTasks || 0, icon: <FaRegUserCircle size={25} className='text-blue-500' /> },
+    ];
+
     return (
         <div className='bg-gray-100 rounded-lg p-5'>
             {/* Header */}

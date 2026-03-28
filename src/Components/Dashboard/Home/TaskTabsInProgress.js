@@ -98,7 +98,7 @@ const TaskCard = ({ task }) => {
             {/* Sub Tasks */}
             <div className='bg-blue-50 rounded-lg px-4 py-2 mb-3'>
                 <span className='text-sm font-semibold text-blue-700'>
-                    Sub-Tasks ({task?.subTasks?.length})
+                    Sub-Tasks ({task?.subtasks?.length})
                 </span>
             </div>
 

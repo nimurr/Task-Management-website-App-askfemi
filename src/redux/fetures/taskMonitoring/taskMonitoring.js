@@ -7,7 +7,13 @@ const taskMonitoring = apiSlice.injectEndpoints({
                 method: "GET",
             }),
         }),
+        getAllOverview: builder.query({
+            query: () => ({
+                url: `/analytics/task-monitoring/summary`,
+                method: "GET",
+            }),
+        }),
     }),
 })
 
-export const { useGetAllTaskActivityQuery } = taskMonitoring
+export const { useGetAllTaskActivityQuery , useGetAllOverviewQuery } = taskMonitoring

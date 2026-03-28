@@ -146,6 +146,7 @@ const TaskManagementTabs = () => {
     const allTask = data?.data?.attributes?.tasks || [];
     const counts = data?.data?.attributes?.counts || {};
 
+    console.log(allTask)
 
 
 
