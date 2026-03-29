@@ -99,7 +99,7 @@ const DashboardHeader = ({ toggleSidebar }) => {
 
             {/* Mobile Menu */}
             <button onClick={toggleSidebar} className='lg:hidden'>
-                <FiMenu size={24} />
+                <FiMenu size={30} />
             </button>
 
             {/* Search Bar */}

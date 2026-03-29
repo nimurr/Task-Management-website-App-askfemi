@@ -1,18 +1,22 @@
-'use client'
+'use client';
+
+import { useGetTeamMembersUsersInfoQuery } from '@/redux/fetures/teamMembers/teamMembers';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { FiInfo, FiEdit2, FiTrash2, FiAlertTriangle } from 'react-icons/fi';
-
-const initialMembers = [
-    { id: '01', name: 'Alax Morgn', email: 'alax@gmail.com', phone: '65656522', gender: 'Male', role: 'Primary', progress: 0, img: 'https://i.pravatar.cc/40?img=11' },
-    { id: '02', name: 'Sam Rivera', email: 'Suppot@gmail.com', phone: '65656522', gender: 'Male', role: 'Secondary', progress: 0, img: 'https://i.pravatar.cc/40?img=47' },
-    { id: '03', name: 'Sam Rivera', email: 'Total Task', phone: '65656522', gender: 'Male', role: 'Secondary', progress: 0, img: 'https://i.pravatar.cc/40?img=47' },
-    { id: '04', name: 'Casey Lin', email: 'Total Task', phone: '65656522', gender: 'Male', role: 'Secondary', progress: 0, img: 'https://i.pravatar.cc/40?img=25' },
-    { id: '05', name: 'Jamie Chen', email: 'Total Task', phone: '65656522', gender: 'Female', role: 'Secondary', progress: 0, img: 'https://i.pravatar.cc/40?img=53' },
-];
+import url from '@/redux/api/baseUrl'; // Your base URL for images
+import CardLoading from '@/Components/Common/CardLoading';
 
 const TeamMembersUserTable = () => {
-    const [members, setMembers] = useState(initialMembers);
+    const [page, setPage] = useState(1);
+    const limit = 10;
+    const { data, isLoading, isFetching } = useGetTeamMembersUsersInfoQuery({ page, limit });
+    const fullData = data?.data?.attributes?.docs || [];
+    const totalDocs = data?.data?.attributes?.totalDocs || 0; // total items
+    const totalPages = data?.data?.attributes?.totalPages || 1; // total pages
+
+    console.log(data?.data?.attributes)
+
     const [deleteTarget, setDeleteTarget] = useState(null);
 
     const handleDeleteClick = (member) => {
@@ -20,7 +24,7 @@ const TeamMembersUserTable = () => {
     };
 
     const handleConfirmDelete = () => {
-        setMembers((prev) => prev.filter((m) => m.id !== deleteTarget.id));
+        // Remove member locally (optional)
         setDeleteTarget(null);
     };
 
@@ -28,10 +32,28 @@ const TeamMembersUserTable = () => {
         setDeleteTarget(null);
     };
 
+    const handlePrevPage = () => {
+        if (page > 1) setPage(page - 1);
+    };
+
+    const handleNextPage = () => {
+        if (page < totalPages) setPage(page + 1);
+    };
+
+    if (isLoading) {
+        return <div className='space-y-4'>
+            {
+                [...Array(2)].map((_, index) => (
+                    <CardLoading key={index} />
+                ))
+            }
+        </div>;
+    }
+
     return (
         <>
             {/* Table */}
-            <div className='bg-white rounded-2xl  border border-gray-100 shadow-sm overflow-x-auto'>
+            <div className='bg-white rounded-2xl border border-gray-100 shadow-sm overflow-x-auto'>
                 <table className='w-full'>
                     <thead>
                         <tr className='border-b border-gray-100'>
@@ -39,43 +61,51 @@ const TeamMembersUserTable = () => {
                             <th className='text-left text-sm font-medium text-gray-400 px-4 py-4'>User Name</th>
                             <th className='text-left text-sm font-medium text-gray-400 px-4 py-4'>Email</th>
                             <th className='text-left text-sm font-medium text-gray-400 px-4 py-4'>Phone Number</th>
-                            <th className='text-left text-sm font-medium text-gray-400 px-4 py-4'>Gender</th>
                             <th className='text-left text-sm font-medium text-gray-400 px-4 py-4'>Role Type</th>
                             <th className='text-left text-sm font-medium text-gray-400 px-4 py-4'>Tasks Progress</th>
                             <th className='text-left text-sm font-medium text-gray-400 px-4 py-4'>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {members.map((member, index) => (
-                            <tr key={index} className='border-b border-gray-50 hover:bg-gray-50 transition-colors'>
-                                <td className='px-6 py-5 text-sm text-gray-400'>{member.id}</td>
+                        {fullData.map((member, index) => (
+                            <tr key={member._id} className='border-b border-gray-50 hover:bg-gray-50 transition-colors'>
+                                <td className='px-6 py-5 text-sm text-gray-400'>{(page - 1) * limit + index + 1}</td>
                                 <td className='px-4 py-5'>
                                     <div className='flex items-center gap-2.5'>
-                                        <img src={member.img} alt={member.name} className='w-9 h-9 rounded-full object-cover flex-shrink-0' />
+                                        <img
+                                            src={url + member.profileImage?.imageUrl}
+                                            alt={member.name}
+                                            className='w-9 h-9 rounded-full object-cover flex-shrink-0'
+                                        />
                                         <span className='text-sm font-semibold text-gray-800'>{member.name}</span>
                                     </div>
                                 </td>
                                 <td className='px-4 py-5 text-sm text-gray-500'>{member.email}</td>
-                                <td className='px-4 py-5 text-sm text-gray-500'>{member.phone}</td>
-                                <td className='px-4 py-5 text-sm text-gray-500'>{member.gender}</td>
-                                <td className='px-4 py-5 text-sm text-gray-500'>{member.role}</td>
+                                <td className='px-4 py-5 text-sm text-gray-500'>{member.phoneNumber || 'N/A'}</td>
+                                <td className='px-4 py-5 text-sm text-gray-500'>{member.roleType}</td>
                                 <td className='px-4 py-5'>
                                     <div className='flex items-center gap-2'>
                                         <div className='w-24 bg-gray-100 rounded-full h-2'>
                                             <div
                                                 className='bg-blue-500 h-2 rounded-full'
-                                                style={{ width: `${member.progress === 0 ? 8 : member.progress}%` }}
+                                                style={{ width: `${member.taskProgress?.progressPercentage || 0}%` }}
                                             />
                                         </div>
-                                        <span className='text-sm text-gray-400'>{member.progress}%</span>
+                                        <span className='text-sm text-gray-400'>{member.taskProgress?.progressPercentage || 0}%</span>
                                     </div>
                                 </td>
                                 <td className='px-4 py-5'>
                                     <div className='flex items-center gap-2'>
-                                        <Link href={`/dashboard/team-members/view/1`} className='w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-blue-500 hover:border-blue-300 transition-colors cursor-pointer'>
+                                        <Link
+                                            href={`/dashboard/team-members/view/${member._id}`}
+                                            className='w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-blue-500 hover:border-blue-300 transition-colors cursor-pointer'
+                                        >
                                             <FiInfo size={15} />
                                         </Link>
-                                        <Link href={`/dashboard/team-members/edit`} className='w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-green-500 hover:border-green-300 transition-colors cursor-pointer'>
+                                        <Link
+                                            href={`/dashboard/team-members/edit/${member._id}`}
+                                            className='w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-green-500 hover:border-green-300 transition-colors cursor-pointer'
+                                        >
                                             <FiEdit2 size={14} />
                                         </Link>
                                         <button
@@ -92,34 +122,50 @@ const TeamMembersUserTable = () => {
                 </table>
             </div>
 
+            {/* Pagination */}
+            <div className='flex justify-end gap-2 mt-4'>
+                <button
+                    onClick={handlePrevPage}
+                    disabled={page === 1 || isFetching}
+                    className={`px-4 py-2 rounded-lg border ${page === 1 ? 'text-gray-400 border-gray-200' : 'text-blue-500 border-blue-300 hover:bg-blue-50'} transition`}
+                >
+                    Prev
+                </button>
+                <span className='px-4 py-2 text-sm text-gray-500'>
+                    Page {page} of {totalPages}
+                </span>
+                <button
+                    onClick={handleNextPage}
+                    disabled={page === totalPages || isFetching}
+                    className={`px-4 py-2 rounded-lg border ${page === totalPages ? 'text-gray-400 border-gray-200' : 'text-blue-500 border-blue-300 hover:bg-blue-50'} transition`}
+                >
+                    Next
+                </button>
+            </div>
+
             {/* Delete Confirmation Modal */}
             {deleteTarget && (
                 <div className='fixed inset-0 z-50 flex items-center justify-center'>
-                    {/* Backdrop */}
                     <div
                         className='absolute inset-0 bg-black/30 backdrop-blur-sm'
                         onClick={handleCancelDelete}
                     />
 
-                    {/* Modal */}
                     <div className='relative bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4 z-10'>
-                        {/* Icon */}
                         <div className='flex justify-center mb-4'>
                             <div className='w-14 h-14 bg-red-50 rounded-full flex items-center justify-center'>
                                 <FiAlertTriangle size={28} className='text-red-500' />
                             </div>
                         </div>
 
-                        {/* Text */}
                         <h2 className='text-lg font-bold text-gray-900 text-center mb-1'>Delete Member</h2>
                         <p className='text-sm text-gray-400 text-center mb-2'>
                             Are you sure you want to delete
                         </p>
 
-                        {/* Member Preview */}
                         <div className='flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-3 mb-6'>
                             <img
-                                src={deleteTarget.img}
+                                src={url + deleteTarget.profileImage?.imageUrl}
                                 alt={deleteTarget.name}
                                 className='w-10 h-10 rounded-full object-cover flex-shrink-0'
                             />
@@ -129,7 +175,6 @@ const TeamMembersUserTable = () => {
                             </div>
                         </div>
 
-                        {/* Buttons */}
                         <div className='flex items-center gap-3'>
                             <button
                                 onClick={handleCancelDelete}

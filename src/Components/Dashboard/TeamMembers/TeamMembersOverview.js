@@ -1,31 +1,46 @@
 'use client';
 
+import CardLoading from '@/Components/Common/CardLoading';
 import { useGetTeamMembersStatisticsQuery } from '@/redux/fetures/teamMembers/teamMembers';
 import Link from 'next/link';
 import React from 'react';
-import { FiUser, FiPlus, FiBookmark, FiClipboard, FiCheckSquare, FiActivity } from 'react-icons/fi';
-
-const stats = [
-    { label: 'Team Size', count: '04', icon: <FiUser size={20} className='text-blue-500' /> },
-    { label: 'Total Tasks', count: '04', icon: <FiClipboard size={20} className='text-blue-500' /> },
-    { label: 'Active Tasks', count: '04', icon: <FiActivity size={20} className='text-blue-500' /> },
-    { label: 'Completed Tasks', count: '04', icon: <FiCheckSquare size={20} className='text-blue-500' /> },
-];
+import { FiUser, FiClipboard, FiActivity, FiCheckSquare, FiPlus } from 'react-icons/fi';
 
 const TeamMembersOverview = () => {
-    const { data } = useGetTeamMembersStatisticsQuery();
+    const { data, isLoading } = useGetTeamMembersStatisticsQuery();
     const fullData = data?.data?.attributes || {};
-    console.log(fullData)
+
+
+
+    const stats = [
+        { label: 'Team Size', count: fullData.teamSize || 0, icon: <FiUser size={20} className='text-blue-500' /> },
+        { label: 'Total Tasks', count: fullData.totalTasks || 0, icon: <FiClipboard size={20} className='text-blue-500' /> },
+        { label: 'Active Tasks', count: fullData.activeTasks || 0, icon: <FiActivity size={20} className='text-blue-500' /> },
+        { label: 'Completed Tasks', count: fullData.completedTasks || 0, icon: <FiCheckSquare size={20} className='text-blue-500' /> },
+    ];
+
+    if (isLoading) {
+        return <div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-4'>
+            {
+                [...Array(4)].map((_, index) => (
+                    <CardLoading key={index} />
+                ))
+            }
+        </div>;
+    }
 
     return (
         <div className='bg-gray-100 rounded-lg p-5'>
             {/* Header */}
-            <div className='flex items-start justify-between mb-6'>
+            <div className='flex items-start justify-between flex-wrap mb-6 gap-5'>
                 <div>
                     <h1 className='text-2xl font-bold text-gray-900'>Team Members</h1>
                     <p className='text-sm text-gray-400 mt-1'>Manage and monitor your team's progress</p>
                 </div>
-                <Link href={`/dashboard/team-members/create`} className='flex items-center gap-2 bg-primary hover:bg-blue-400 text-white text-sm font-semibold px-5 py-3 rounded-lg transition-colors cursor-pointer'>
+                <Link
+                    href={`/dashboard/team-members/create`}
+                    className='flex items-center gap-2 bg-primary hover:bg-blue-400 text-white text-sm font-semibold px-5 py-3 rounded-lg transition-colors cursor-pointer'
+                >
                     <FiPlus size={16} />
                     Create Member
                 </Link>
