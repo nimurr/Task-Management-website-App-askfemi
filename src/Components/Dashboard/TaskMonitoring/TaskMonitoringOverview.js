@@ -8,6 +8,7 @@ import { FaRegUserCircle } from 'react-icons/fa';
 import Link from 'next/link';
 import { useGetAllOverviewQuery } from '@/redux/fetures/taskMonitoring/taskMonitoring';
 import CardLoading from '@/Components/Common/CardLoading';
+import { IoAddOutline } from 'react-icons/io5';
 
 const TaskMonitoringOverview = () => {
     const { data, isLoading } = useGetAllOverviewQuery();
@@ -40,8 +41,8 @@ const TaskMonitoringOverview = () => {
                     <h1 className='text-2xl font-bold text-gray-900'>Task Monitoring</h1>
                     <p className='text-sm text-gray-400 mt-1'>Track and analyze task performance across your team</p>
                 </div>
-                <Link href="/dashboard/task-monitoring/create-task" className='bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-10 py-4 rounded-lg transition-colors cursor-pointer'>
-                    Task Create
+                <Link href="/dashboard/task-monitoring/create-task" className='bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-10 py-4 rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-2'>
+                    <IoAddOutline size={25} /> Task Create
                 </Link>
             </div>
 

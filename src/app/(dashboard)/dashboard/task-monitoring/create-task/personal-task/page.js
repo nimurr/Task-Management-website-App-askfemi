@@ -1,149 +1,188 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FiCalendar, FiClock, FiPlus, FiTrash2 } from 'react-icons/fi';
+import { FiPlus, FiTrash2 } from 'react-icons/fi';
+import { useCreateTaskForChildrenMutation } from '@/redux/fetures/taskMonitoring/taskMonitoring';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 const Page = () => {
+  const router = useRouter();
+
+  const [createTask, { isLoading }] = useCreateTaskForChildrenMutation();
+
+  // ✅ Form States
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
+
+  // ✅ Subtasks (multiple)
   const [subTasks, setSubTasks] = useState([
-    'Client meeting 10 min',
+    { title: '' }
   ]);
 
+  // Add Subtask
   const addSubTask = () => {
-    setSubTasks([...subTasks, '']);
+    setSubTasks([...subTasks, { title: '' }]);
   };
 
+  // Update Subtask
   const updateSubTask = (index, value) => {
     const updated = [...subTasks];
-    updated[index] = value;
+    updated[index].title = value;
     setSubTasks(updated);
   };
 
+  // Remove Subtask
   const removeSubTask = (index) => {
-    setSubTasks(subTasks.filter((_, i) => i !== index));
+    const updated = subTasks.filter((_, i) => i !== index);
+    setSubTasks(updated);
+  };
+
+
+
+  // ✅ Submit Handler
+  const handleSubmit = async () => {
+    if (!title || !description || !date || !time) {
+      return toast.error('Please fill all fields');
+    }
+
+    const startDateTime = new Date(`${date}T${time}`);
+
+    const payload = {
+      title,
+      description,
+      taskType: 'personal',
+      priority: 'medium',
+      startTime: startDateTime.toISOString(),
+      scheduledTime: time,
+      dueDate: new Date(date).toISOString(),
+      subtasks: subTasks.map((sub, index) => ({
+        title: sub.title,
+        order: index + 1,
+      })),
+    };
+
+    console.log('Payload:', payload);
+
+    try {
+      const res = await createTask(payload).unwrap();
+
+      if (res?.code === 201) {
+        toast.success(res?.message || 'Task Created Successfully');
+        router.push('/dashboard/task-monitoring');
+      } else {
+        toast.error(res?.message || 'Something went wrong');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to create task');
+    }
   };
 
   return (
     <div className="bg-gray-50 min-h-screen p-8">
 
       {/* Header */}
-      <div className="flex items-start justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-800">
-            Single Assignment
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Track and analyze task performance across your team
-          </p>
-        </div>
-
-        <div className="text-sm text-gray-500 flex items-center gap-2">
-          <span className="hover:text-blue-600 cursor-pointer">Dashboard</span>
-          <span className="text-gray-400">›</span>
-          <span className="text-blue-600 font-medium">Create Task</span>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-2xl font-semibold text-gray-800">
+          Personal Task
+        </h1>
+        <p className="text-sm text-gray-500 mt-1">
+          Create and manage your personal tasks
+        </p>
       </div>
 
       {/* Card */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm max-w-lg">
+      <div className="bg-white border rounded-xl p-6 shadow-sm max-w-lg">
 
-        <h2 className="text-base font-semibold text-gray-800 mb-6">
+        <h2 className="text-base font-semibold mb-6">
           Create Task
         </h2>
 
-        {/* Task Title */}
+        {/* Title */}
         <div className="mb-5">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="text-sm font-medium mb-2 block">
             Task Title
           </label>
           <input
-            defaultValue="Complete Math Homework"
-            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-sm text-gray-700"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter task title"
+            className="w-full border px-4 py-2 rounded-md"
           />
         </div>
 
-        {/* Task Description */}
+        {/* Description */}
         <div className="mb-5">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="text-sm font-medium mb-2 block">
             Task Description
           </label>
           <textarea
-            rows="4"
-            defaultValue="Finish exercises 1-10 from chapter 5 This call is scheduled to align the design team on current progress, clarify open points. Finish exercises 1-10 from chapter 5 This call is scheduled to align the design team on current progress."
-            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-sm text-gray-700 resize-none"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={4}
+            placeholder="Enter description"
+            className="w-full border px-4 py-2 rounded-md"
           />
         </div>
 
         {/* Date & Time */}
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Task Date
-            </label>
-            <div className="relative">
-              <input
-                type="date"
-                defaultValue="2026-12-10"
-                className="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-sm text-gray-700"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Time
-            </label>
-            <div className="relative">
-              <input
-                type="time"
-                defaultValue="08:30"
-                className="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-sm text-gray-700"
-              />
-            </div>
-          </div>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="border px-3 py-2 rounded-md"
+          />
+          <input
+            type="time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            className="border px-3 py-2 rounded-md"
+          />
         </div>
 
-        {/* Sub Tasks */}
+        {/* Subtasks */}
         <div className="mb-6">
-          <div className="space-y-3">
-            {subTasks.map((task, index) => (
-              <div key={index} className="border border-gray-200 rounded-md overflow-hidden">
-                {/* Sub Task Badge */}
-                <div className="px-3 pt-2">
-                  <span className="inline-block bg-blue-500 text-white text-xs font-medium px-2 py-0.5 rounded">
-                    Sub Task
-                  </span>
-                </div>
-                {/* Sub Task Row */}
-                <div className="flex items-center gap-2 px-3 pb-2 pt-1">
-                  <input
-                    value={task}
-                    onChange={(e) => updateSubTask(index, e.target.value)}
-                    className="flex-1 outline-none text-sm text-gray-700 bg-transparent"
-                    placeholder="Enter sub task..."
-                  />
-                  <button
-                    onClick={() => removeSubTask(index)}
-                    className="text-gray-400 hover:text-red-500 transition"
-                  >
-                    <FiTrash2 size={15} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <p className="font-medium mb-2">Subtasks</p>
+
+          {subTasks.map((task, index) => (
+            <div key={index} className="flex gap-2 mb-2">
+              <input
+                value={task.title}
+                onChange={(e) => updateSubTask(index, e.target.value)}
+                placeholder={`Subtask ${index + 1}`}
+                className="flex-1 border px-3 py-2 rounded-md"
+              />
+
+              {subTasks.length > 1 && (
+                <button
+                  onClick={() => removeSubTask(index)}
+                  className="text-red-500"
+                >
+                  <FiTrash2 size={16} />
+                </button>
+              )}
+            </div>
+          ))}
 
           <button
             onClick={addSubTask}
-            className="mt-4 w-full border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-600 py-2.5 rounded-md text-sm font-medium flex items-center justify-center gap-2 transition"
+            className="w-full border border-blue-500 text-blue-600 py-2 rounded flex items-center justify-center gap-2 mt-2"
           >
-            <FiPlus size={15} />
-            Add Sub Task
+            <FiPlus /> Add Subtask
           </button>
         </div>
 
-        {/* Create Task Button */}
-        <button className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-md font-medium transition text-sm">
-          Create Task
+        {/* Submit */}
+        <button
+          onClick={handleSubmit}
+          disabled={isLoading}
+          className="w-full bg-blue-500 text-white py-3 rounded-md"
+        >
+          {isLoading ? 'Creating...' : 'Create Task'}
         </button>
 
       </div>
