@@ -1,3 +1,6 @@
+'use client';
+
+import { useGetTeamMembersStatisticsQuery } from '@/redux/fetures/teamMembers/teamMembers';
 import Link from 'next/link';
 import React from 'react';
 import { FiUser, FiPlus, FiBookmark, FiClipboard, FiCheckSquare, FiActivity } from 'react-icons/fi';
@@ -10,6 +13,10 @@ const stats = [
 ];
 
 const TeamMembersOverview = () => {
+    const { data } = useGetTeamMembersStatisticsQuery();
+    const fullData = data?.data?.attributes || {};
+    console.log(fullData)
+
     return (
         <div className='bg-gray-100 rounded-lg p-5'>
             {/* Header */}
