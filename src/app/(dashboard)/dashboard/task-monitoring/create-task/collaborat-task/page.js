@@ -1,203 +1,255 @@
 'use client';
 
+import CardLoading from '@/Components/Common/CardLoading';
+import url from '@/redux/api/baseUrl';
+import {
+  useCreateTaskForChildrenMutation,
+  useGetMyAllMembersQuery
+} from '@/redux/fetures/taskMonitoring/taskMonitoring';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
-import { FiCalendar, FiClock, FiPlus, FiX } from 'react-icons/fi';
-
-const initialMembers = [
-  { id: 1, name: 'Alax Morgn' },
-  { id: 2, name: 'Jamie Chen' },
-  { id: 3, name: 'Sam Rivera' },
-  { id: 4, name: 'Casey Lin' },
-];
+import { FiPlus } from 'react-icons/fi';
+import { toast } from 'react-toastify';
 
 const Page = () => {
-  const [selectedMembers, setSelectedMembers] = useState([1, 2, 3]);
-  const [subTasks, setSubTasks] = useState([
-    'Client meeting 10 min',
-    'Client meeting 10 min',
-    'Client meeting 10 min',
-  ]);
+  const [page, setPage] = useState(1);
+  const limit = 5;
 
-  const toggleMember = (id) => {
+  const { data, isLoading } = useGetMyAllMembersQuery({ page, limit });
+  const [createChildrenTask, { isLoading: isCreating }] =
+    useCreateTaskForChildrenMutation();
+
+  const fullChildren = data?.data?.attributes?.children || [];
+  const total = data?.data?.attributes?.total || 0;
+  const totalPages = Math.ceil(total / limit);
+
+  const router = useRouter();
+
+  // ✅ FORM STATES
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
+
+  // ✅ MULTI SELECT
+  const [selectedMembers, setSelectedMembers] = useState([]);
+
+  const handleSelect = (childId) => {
     setSelectedMembers((prev) =>
-      prev.includes(id)
-        ? prev.filter((m) => m !== id)
-        : [...prev, id]
+      prev.includes(childId)
+        ? prev.filter((id) => id !== childId)
+        : [...prev, childId]
     );
   };
 
-  const addSubTask = () => {
-    setSubTasks([...subTasks, '']);
+  // ✅ Subtasks
+  const [subtasks, setSubtasks] = useState([{ title: '' }]);
+
+  const handleSubtaskChange = (index, value) => {
+    const updated = [...subtasks];
+    updated[index].title = value;
+    setSubtasks(updated);
   };
 
-  const updateSubTask = (index, value) => {
-    const updated = [...subTasks];
-    updated[index] = value;
-    setSubTasks(updated);
+  const addSubtask = () => {
+    setSubtasks([...subtasks, { title: '' }]);
   };
 
-  const removeSubTask = (index) => {
-    setSubTasks(subTasks.filter((_, i) => i !== index));
+  const removeSubtask = (index) => {
+    setSubtasks(subtasks.filter((_, i) => i !== index));
+  };
+
+  // ✅ SUBMIT
+  const handleSubmit = async () => {
+    if (!selectedMembers.length) {
+      toast.error('Please select at least one member');
+      return;
+    }
+
+    if (!title || !date || !time) {
+      toast.error('All fields required');
+      return;
+    }
+
+    const startDateTime = new Date(`${date}T${time}`);
+
+    const payload = {
+      title,
+      description,
+      taskType: 'collaborative', // 🔥 important
+      priority: 'high',
+      startTime: startDateTime.toISOString(),
+      scheduledTime: time,
+      assignedUserIds: selectedMembers, // 🔥 multi IDs
+      dueDate: new Date(date).toISOString(),
+      subtasks: subtasks.map((sub, index) => ({
+        title: sub.title,
+        order: index + 1,
+      })),
+    };
+
+    try {
+      const res = await createChildrenTask(payload).unwrap();
+
+      toast.success(res?.message || 'Task Created ✅');
+      router.push('/dashboard/task-monitoring');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to create task ❌');
+    }
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen p-8">
-      
-      {/* Header */}
-      <div className="flex items-start justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-800">
-            Collaborative Task
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Track and analyze task performance across your team
-          </p>
-        </div>
+    <div className="bg-gray-100 rounded-lg p-5">
 
-        <div className="text-sm text-gray-500">
-          <span className="hover:text-blue-600 cursor-pointer">
-            Dashboard
-          </span>
-          <span className="mx-2">›</span>
-          <span className="text-blue-600 font-medium">
-            Create Task
-          </span>
-        </div>
-      </div>
+      {/* Header */}
+      <h1 className="text-2xl font-semibold mb-6">
+        Collaborative Task
+      </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        {/* Left Section */}
-        <div className="lg:col-span-2 bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+        {/* LEFT FORM */}
+        <div className="lg:col-span-2 bg-white border rounded-xl p-6 shadow-sm">
 
-          <h2 className="text-base font-semibold text-gray-800 mb-6">
-            Create Task
-          </h2>
+          <h2 className="font-semibold mb-5">Create Task</h2>
 
-          {/* Task Title */}
-          <div className="mb-5">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Task Title
-            </label>
-            <input
-              defaultValue="Complete Math Homework"
-              className="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-          </div>
+          {/* Title */}
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Task Title"
+            className="w-full border px-4 py-2 rounded mb-4"
+          />
 
-          {/* Task Description */}
-          <div className="mb-5">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Task Description
-            </label>
-            <textarea
-              rows="4"
-              defaultValue="Finish exercises 1-10 from chapter 5 This call is scheduled to align the design team on current progress, clarify open points, Finish exercises 1-10 from chapter 5 This call is scheduled to align the design team on current progress."
-              className="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-          </div>
+          {/* Description */}
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Task Description"
+            className="w-full border px-4 py-2 rounded mb-4"
+          />
 
           {/* Date & Time */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Task Date
-              </label>
-              <div className="relative">
-                <input
-                  type="date"
-                  defaultValue="2026-12-10"
-                  className="w-full border border-gray-300 rounded-md px-4 py-2 pr-10 focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-                <FiCalendar className="absolute right-3 top-3 text-gray-400" />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Time
-              </label>
-              <div className="relative">
-                <input
-                  type="time"
-                  defaultValue="08:30"
-                  className="w-full border border-gray-300 rounded-md px-4 py-2 pr-10 focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-                <FiClock className="absolute right-3 top-3 text-gray-400" />
-              </div>
-            </div>
-
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <input
+              type="date"
+              onChange={(e) => setDate(e.target.value)}
+              className="border px-3 py-2 rounded"
+            />
+            <input
+              type="time"
+              onChange={(e) => setTime(e.target.value)}
+              className="border px-3 py-2 rounded"
+            />
           </div>
 
-          {/* Sub Tasks */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              Sub Task
-            </label>
+          {/* Subtasks */}
+          <div className="mb-4">
+            <p className="font-medium mb-2">Subtasks</p>
 
-            <div className="space-y-3">
-              {subTasks.map((task, index) => (
-                <div key={index} className="flex items-center gap-3">
-                  <input
-                    value={task}
-                    onChange={(e) => updateSubTask(index, e.target.value)}
-                    className="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                  />
+            {subtasks.map((sub, index) => (
+              <div key={index} className="flex gap-2 mb-2">
+                <input
+                  value={sub.title}
+                  onChange={(e) =>
+                    handleSubtaskChange(index, e.target.value)
+                  }
+                  placeholder={`Subtask ${index + 1}`}
+                  className="flex-1 border px-3 py-2 rounded"
+                />
+
+                {subtasks.length > 1 && (
                   <button
-                    onClick={() => removeSubTask(index)}
+                    onClick={() => removeSubtask(index)}
                     className="text-red-500"
                   >
-                    <FiX />
+                    ✕
                   </button>
-                </div>
-              ))}
-            </div>
+                )}
+              </div>
+            ))}
 
             <button
-              onClick={addSubTask}
-              className="mt-4 w-full border border-blue-500 text-blue-600 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2 hover:bg-blue-50 transition"
+              onClick={addSubtask}
+              className="w-full border border-blue-500 text-blue-600 py-2 rounded flex items-center justify-center gap-2"
             >
-              <FiPlus />
-              Add Sub Task
+              <FiPlus /> Add Subtask
             </button>
           </div>
 
-          <button className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-md font-medium transition">
-            Create Task
+          {/* Submit */}
+          <button
+            onClick={handleSubmit}
+            disabled={isCreating}
+            className="w-full bg-blue-500 text-white py-3 rounded"
+          >
+            {isCreating ? 'Creating...' : 'Create Task'}
           </button>
         </div>
 
-        {/* Right Section */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-          <h2 className="text-base font-semibold text-gray-800 mb-6">
-            Assign To
+        {/* RIGHT MEMBERS */}
+        <div className="bg-white border rounded-xl p-6 shadow-sm">
+          <h2 className="font-semibold mb-5">
+            Assign Members
           </h2>
 
-          <div className="space-y-3">
-            {initialMembers.map((member) => {
-              const selected = selectedMembers.includes(member.id);
-              return (
-                <div
-                  key={member.id}
-                  onClick={() => toggleMember(member.id)}
-                  className={`cursor-pointer px-4 py-2 rounded-md border transition ${
-                    selected
-                      ? 'bg-blue-100 border-blue-500 text-blue-700'
-                      : 'border-gray-300 hover:bg-gray-100'
-                  }`}
+          {/* Selected count */}
+          <p className="text-sm text-gray-500 mb-3">
+            Selected: {selectedMembers.length}
+          </p>
+
+          {isLoading ? (
+            [...Array(3)].map((_, i) => <CardLoading key={i} />)
+          ) : (
+            <>
+              <div className="space-y-3">
+                {fullChildren.map((child) => (
+                  <label
+                    key={child._id}
+                    className="flex items-center gap-3 cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedMembers.includes(child.childUserId)}
+                      onChange={() => handleSelect(child.childUserId)}
+                    />
+
+                    <img
+                      src={url + child.profileImage?.imageUrl}
+                      className="w-8 h-8 rounded-full"
+                    />
+
+                    <span>{child.name}</span>
+                  </label>
+                ))}
+              </div>
+
+              {/* Pagination */}
+              <div className="flex justify-between mt-5">
+                <button
+                  onClick={() => setPage((p) => p - 1)}
+                  disabled={page === 1}
+                  className="px-3 py-1 bg-gray-200 rounded"
                 >
-                  {member.name}
-                </div>
-              );
-            })}
-          </div>
+                  Prev
+                </button>
 
-          <button className="mt-4 w-full border border-dashed border-blue-400 text-blue-600 py-2 rounded-md text-sm font-medium hover:bg-blue-50 transition">
-            + Add Member
-          </button>
+                <span>
+                  {page} / {totalPages || 1}
+                </span>
+
+                <button
+                  onClick={() => setPage((p) => p + 1)}
+                  disabled={page === totalPages}
+                  className="px-3 py-1 bg-gray-200 rounded"
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
         </div>
-
       </div>
     </div>
   );

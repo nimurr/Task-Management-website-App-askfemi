@@ -13,7 +13,20 @@ const taskMonitoring = apiSlice.injectEndpoints({
                 method: "GET",
             }),
         }),
+        getMyAllMembers: builder.query({
+            query: ({ page, limit }) => ({
+                url: `/children-business-users/my-children?page=${page}&limit=${limit}`,
+                method: "GET",
+            }),
+        }),
+        createTaskForChildren: builder.mutation({
+            query: (data) => ({
+                url: `/tasks`,
+                method: "POST",
+                body: data,
+            }),
+        })
     }),
 })
 
-export const { useGetAllTaskActivityQuery , useGetAllOverviewQuery } = taskMonitoring
+export const { useGetAllTaskActivityQuery, useGetAllOverviewQuery, useGetMyAllMembersQuery , useCreateTaskForChildrenMutation } = taskMonitoring

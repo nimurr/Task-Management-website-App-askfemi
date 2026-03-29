@@ -50,7 +50,7 @@ const Page = () => {
                             Assign task to one family member
                         </p>
 
-                        <Link href={'/dashboard/task-monitoring/create-task/single-assignment'} className="w-full inline-block text-center bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-md text-sm font-medium transition">
+                        <Link href={'/dashboard/task-monitoring/create-task/single-assignment'} className="w-full inline-block text-center border border-blue-500 text-blue-600 hover:bg-blue-500  hover:text-white py-3 rounded-md text-sm font-medium transition">
                             Create Now
                         </Link>
                     </div>
@@ -68,7 +68,7 @@ const Page = () => {
                             Assign to multiple members
                         </p>
 
-                        <Link href={'/dashboard/task-monitoring/create-task/collaborat-task'} className="w-full inline-block text-center border border-blue-500 text-blue-600 hover:bg-blue-50 py-3 rounded-md text-sm font-medium transition">
+                        <Link href={'/dashboard/task-monitoring/create-task/collaborat-task'}className="w-full inline-block text-center border border-blue-500 text-blue-600 hover:bg-blue-500  hover:text-white py-3 rounded-md text-sm font-medium transition">
                             Create Now
                         </Link>
                     </div>
@@ -86,7 +86,7 @@ const Page = () => {
                             Create task for yourself
                         </p>
 
-                        <Link href={'/dashboard/task-monitoring/create-task/personal-task'} className="w-full inline-block text-center border border-blue-500 text-blue-600 hover:bg-blue-50 py-3 rounded-md text-sm font-medium transition">
+                        <Link href={'/dashboard/task-monitoring/create-task/personal-task'} className="w-full inline-block text-center border border-blue-500 text-blue-600 hover:bg-blue-500  hover:text-white py-3 rounded-md text-sm font-medium transition">
                             Create Now
                         </Link>
                     </div>
