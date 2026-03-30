@@ -2,6 +2,7 @@
 
 import url from "@/redux/api/baseUrl";
 import { useGetTeamMembersUserDetialsInfoQuery } from "@/redux/fetures/teamMembers/teamMembers";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useState, useRef, useEffect } from "react";
 
@@ -88,9 +89,9 @@ const Page = () => {
                             </div>
                         )}
 
-                        <button className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm">
+                        <Link href={`/dashboard/team-members/edit/${id}`} className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm">
                             Edit Profile
-                        </button>
+                        </Link>
                     </div>
                 </div>
 
