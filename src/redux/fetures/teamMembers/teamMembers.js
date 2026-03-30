@@ -14,7 +14,13 @@ const teamMembers = apiSlice.injectEndpoints({
                 method: "GET",
             }),
         }),
+        getTeamMembersUserDetialsInfo: builder.query({
+            query: (id) => ({
+                url: `/children-business-users/team-members/${id}/v2`,
+                method: "GET",
+            }),
+        }),
     }),
 })
 
-export const { useGetTeamMembersStatisticsQuery , useGetTeamMembersUsersInfoQuery } = teamMembers;
+export const { useGetTeamMembersStatisticsQuery, useGetTeamMembersUsersInfoQuery, useGetTeamMembersUserDetialsInfoQuery } = teamMembers;

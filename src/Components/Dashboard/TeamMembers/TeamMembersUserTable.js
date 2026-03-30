@@ -97,13 +97,13 @@ const TeamMembersUserTable = () => {
                                 <td className='px-4 py-5'>
                                     <div className='flex items-center gap-2'>
                                         <Link
-                                            href={`/dashboard/team-members/view/${member._id}`}
+                                            href={`/dashboard/team-members/view/${member.childUserId}`}
                                             className='w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-blue-500 hover:border-blue-300 transition-colors cursor-pointer'
                                         >
                                             <FiInfo size={15} />
                                         </Link>
                                         <Link
-                                            href={`/dashboard/team-members/edit/${member._id}`}
+                                            href={`/dashboard/team-members/edit/${member.childUserId}`}
                                             className='w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-green-500 hover:border-green-300 transition-colors cursor-pointer'
                                         >
                                             <FiEdit2 size={14} />
