@@ -20,10 +20,10 @@ const Page = () => {
                     </div>
                 </div>
 
-                <div className="flex gap-8 max-w-xl">
+                <div className="flex gap-8 justify-center">
 
                     {/* Form Card */}
-                    <div className="bg-white  p-6 rounded-xl shadow-sm space-y-4">
+                    <div className="bg-white max-w-xl p-6 rounded-xl shadow-sm space-y-4">
 
                         <input
                             type="text"
