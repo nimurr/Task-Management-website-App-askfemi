@@ -8,7 +8,6 @@ const ProfileComponent = () => {
     const { data } = useGetProfileQuery();
     const user = data?.data?.attributes;
 
-    console.log(user)
 
     // Image preview state
     const [previewImage, setPreviewImage] = useState(null);

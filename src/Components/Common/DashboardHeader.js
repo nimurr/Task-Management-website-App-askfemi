@@ -65,9 +65,23 @@ const DashboardHeader = ({ toggleSidebar }) => {
 
     const unreadCount = notifs.filter((n) => !n.read).length;
 
-    const { data } = useGetProfileQuery();
-    const user = data?.data?.attributes;
 
+    const { data, isLoading, isError, error, refetch } = useGetProfileQuery(undefined, {
+        skip: typeof window === 'undefined',
+        refetchOnMountOrArgChange: true,
+    });
+
+    // Check if session has expired (401 error)
+    // RTK Query puts the response in error.data when status is not 2xx
+    const isSessionExpired = error?.status === 401 || error?.data?.code === 401;
+    const user = isSessionExpired ? null : data?.data?.attributes;
+
+    if (isSessionExpired) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+    }
+ 
 
 
     useEffect(() => {

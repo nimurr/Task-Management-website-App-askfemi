@@ -20,10 +20,17 @@ const Header = () => {
     const [scrolled, setScrolled] = useState(false);
     const [activeLink, setActiveLink] = useState('');
 
-    const { data, isLoading, isError } = useGetProfileQuery();
-    const user = data?.data?.attributes;
- 
-    console.log(data)
+    const { data, isLoading, isError, error, refetch } = useGetProfileQuery(undefined, {
+        skip: typeof window === 'undefined',
+        refetchOnMountOrArgChange: true,
+    });
+    
+    // Check if session has expired (401 error)
+    // RTK Query puts the response in error.data when status is not 2xx
+    const isSessionExpired = error?.status === 401 || error?.data?.code === 401;
+    const user = isSessionExpired ? null : data?.data?.attributes;
+
+
 
 
 
