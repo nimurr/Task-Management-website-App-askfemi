@@ -20,8 +20,13 @@ const Header = () => {
     const [scrolled, setScrolled] = useState(false);
     const [activeLink, setActiveLink] = useState('');
 
-    const { data } = useGetProfileQuery();
+    const { data, isLoading, isError } = useGetProfileQuery();
     const user = data?.data?.attributes;
+ 
+    console.log(data)
+
+
+
     /* Shrink navbar on scroll */
     useEffect(() => {
 
@@ -30,7 +35,7 @@ const Header = () => {
 
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
- 
+
 
     /* Lock body scroll when mobile menu is open */
     useEffect(() => {
