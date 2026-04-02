@@ -8,6 +8,12 @@ const profile = apiSlice.injectEndpoints({
                 method: "GET",
             }),
         }),
+        getChildProfilebyId: builder.query({
+            query: (id) => ({
+                url: `/children-business-users/team-members/${id}/edit`,
+                method: "GET",
+            }),
+        }),
         updateProfile: builder.mutation({
             query: (data) => ({
                 url: `/users/profile`,
@@ -17,12 +23,12 @@ const profile = apiSlice.injectEndpoints({
         }),
         updateChieldProfile: builder.mutation({
             query: ({ data, id }) => ({
-                url: `/children-business-user/children/${id}`,
-                method: "PUT",
+                url: `/children-business-users/children/${id}/v2`,
+                method: "PATCH",
                 body: data,
             }),
         }),
     }),
 })
 
-export const { useGetProfileQuery, useUpdateProfileMutation, useUpdateChieldProfileMutation } = profile
+export const { useGetProfileQuery, useGetChildProfilebyIdQuery, useUpdateProfileMutation, useUpdateChieldProfileMutation } = profile
