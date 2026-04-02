@@ -15,7 +15,14 @@ const profile = apiSlice.injectEndpoints({
                 body: data,
             }),
         }),
+        updateChieldProfile: builder.mutation({
+            query: ({ data, id }) => ({
+                url: `/children-business-user/children/${id}`,
+                method: "PUT",
+                body: data,
+            }),
+        }),
     }),
 })
 
-export const { useGetProfileQuery , useUpdateProfileMutation } = profile
+export const { useGetProfileQuery, useUpdateProfileMutation, useUpdateChieldProfileMutation } = profile
