@@ -28,7 +28,13 @@ const profile = apiSlice.injectEndpoints({
                 body: data,
             }),
         }),
+        deleteChieldProfile: builder.mutation({
+            query: (id) => ({
+                url: `/children-business-users/children/${id}`,
+                method: "DELETE",
+            }),
+        }),
     }),
 })
 
-export const { useGetProfileQuery, useGetChildProfilebyIdQuery, useUpdateProfileMutation, useUpdateChieldProfileMutation } = profile
+export const { useGetProfileQuery, useGetChildProfilebyIdQuery, useUpdateProfileMutation, useUpdateChieldProfileMutation, useDeleteChieldProfileMutation } = profile

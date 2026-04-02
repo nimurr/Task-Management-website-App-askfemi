@@ -6,6 +6,8 @@ import React, { useState } from 'react';
 import { FiInfo, FiEdit2, FiTrash2, FiAlertTriangle } from 'react-icons/fi';
 import url from '@/redux/api/baseUrl'; // Your base URL for images
 import CardLoading from '@/Components/Common/CardLoading';
+import { useDeleteChieldProfileMutation } from '@/redux/fetures/profile/profile';
+import { toast } from 'react-toastify';
 
 const TeamMembersUserTable = () => {
     const [page, setPage] = useState(1);
@@ -15,12 +17,24 @@ const TeamMembersUserTable = () => {
     const totalDocs = data?.data?.attributes?.totalDocs || 0; // total items
     const totalPages = data?.data?.attributes?.totalPages || 1; // total pages
 
+    const [deleteChildProfile] = useDeleteChieldProfileMutation();
+
     console.log(data?.data?.attributes)
 
     const [deleteTarget, setDeleteTarget] = useState(null);
 
-    const handleDeleteClick = (member) => {
-        setDeleteTarget(member);
+    const handleDeleteClick = async (member) => {
+        console.log(member?.childUserId);
+
+        try {
+            const res = await deleteChildProfile(member?.childUserId);
+            console.log(res);
+            toast.success('Member deleted successfully');
+        } catch (error) {
+            console.error("Error deleting child profile:", error);
+            toast.error('Failed to delete member');
+        }
+
     };
 
     const handleConfirmDelete = () => {
