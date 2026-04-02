@@ -1,120 +1,128 @@
 'use client';
+import { useCreateMemberProfileMutation } from "@/redux/fetures/profile/profile";
 import React from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 const Page = () => {
+    const [createMemberProfile, { isLoading }] = useCreateMemberProfileMutation();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const form = e.target;
 
+        // ✅ MATCH API STRUCTURE EXACTLY
         const formData = {
-            username: form.username.value,
+            name: form.name.value,
             email: form.email.value,
-            phone: form.phone.value,
-            address: form.address.value,
-            gender: form.gender.value,
-            dob: form.dob.value,
-            age: form.age.value,
-            supportMode: form.supportMode.value,
-            password: form.password.value
+            password: form.password.value,
+            phoneNumber: form.phoneNumber.value,
+            location: form.location.value,
+            gender: form.gender.value.toLowerCase(),
+            dateOfBirth: form.dateOfBirth.value,
+            supportMode: form.supportMode.value.toLowerCase()
         };
 
-        console.log(formData);
+        console.log("Payload:", formData);
+
+        try {
+            await createMemberProfile(formData).unwrap();
+
+            toast.success("Member created successfully!");
+
+            form.reset(); // 🔥 clear form
+
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.data?.message || "Failed to create member");
+        }
     };
 
     return (
         <div className="min-h-screen bg-gray-100 rounded-lg p-8">
-            <div>
+            <ToastContainer />
 
-                {/* Header */}
-                <div className="flex justify-between items-center mb-6">
-                    <div>
-                        <h1 className="text-2xl font-semibold">Create Member</h1>
-                        <p className="text-sm text-gray-500">
-                            Create and manage team members
-                        </p>
-                    </div>
-
-                    <div className="text-sm text-gray-500">
-                        Dashboard <span className="mx-2">›</span>
-                        <span className="text-blue-500">Create Member</span>
-                    </div>
+            {/* Header */}
+            <div className="flex justify-between items-center mb-6">
+                <div>
+                    <h1 className="text-2xl font-semibold">Create Member</h1>
+                    <p className="text-sm text-gray-500">
+                        Create and manage team members
+                    </p>
                 </div>
-
-                <form onSubmit={handleSubmit} className="flex gap-8 justify-center">
-
-                    <div className="bg-white max-w-xl p-6 rounded-xl shadow-sm space-y-4">
-
-                        <input
-                            type="text"
-                            name="username"
-                            placeholder="User name"
-                            className="w-full border rounded-lg px-4 py-3 text-sm"
-                        />
-
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Email"
-                            className="w-full border rounded-lg px-4 py-3 text-sm"
-                        />
-
-                        <input
-                            type="text"
-                            name="phone"
-                            placeholder="Phone number"
-                            className="w-full border rounded-lg px-4 py-3 text-sm"
-                        />
-
-                        <input
-                            type="text"
-                            name="address"
-                            placeholder="Address"
-                            className="w-full border rounded-lg px-4 py-3 text-sm"
-                        />
-
-                        <select name="gender" className="w-full border rounded-lg px-4 py-3 text-sm">
-                            <option value="">Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other gender</option>
-                        </select>
-
-                        <input
-                            type="date"
-                            name="dob"
-                            className="w-full border rounded-lg px-4 py-3 text-sm"
-                        />
-
-                        <input
-                            type="number"
-                            name="age"
-                            placeholder="Age"
-                            className="w-full border rounded-lg px-4 py-3 text-sm"
-                        />
-
-                        <select name="supportMode" className="w-full border rounded-lg px-4 py-3 text-sm">
-                            <option value="">Support Mode</option>
-                            <option value="Calm">Calm</option>
-                            <option value="Encouraging">Encouraging</option>
-                            <option value="Logical">Logical</option>
-                        </select>
-
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="Enter Password"
-                            className="w-full border rounded-lg px-4 py-3 text-sm"
-                        />
-
-                        <button className="w-full bg-blue-500 text-white py-3 rounded-lg font-medium">
-                            Create an account
-                        </button>
-
-                    </div>
-                </form>
             </div>
+
+            <form onSubmit={handleSubmit} className="flex justify-center">
+
+                <div className="bg-white max-w-xl w-full p-6 rounded-xl shadow-sm space-y-4">
+
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="User name"
+                        className="w-full border px-4 py-3 rounded-lg"
+                        required
+                    />
+
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        className="w-full border px-4 py-3 rounded-lg"
+                        required
+                    />
+
+                    <input
+                        type="text"
+                        name="phoneNumber"
+                        placeholder="Phone number"
+                        className="w-full border px-4 py-3 rounded-lg"
+                    />
+
+                    <input
+                        type="text"
+                        name="location"
+                        placeholder="Location"
+                        className="w-full border px-4 py-3 rounded-lg"
+                    />
+
+                    <select name="gender" className="w-full border px-4 py-3 rounded-lg">
+                        <option value="">Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+
+                    <input
+                        type="date"
+                        name="dateOfBirth"
+                        className="w-full border px-4 py-3 rounded-lg"
+                    />
+
+                    <select name="supportMode" className="w-full border px-4 py-3 rounded-lg">
+                        <option value="">Support Mode</option>
+                        <option value="calm">Calm</option>
+                        <option value="encouraging">Encouraging</option>
+                        <option value="logical">Logical</option>
+                    </select>
+
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Enter Password"
+                        className="w-full border px-4 py-3 rounded-lg"
+                        required
+                    />
+
+                    <button
+                        type="submit"
+                        disabled={isLoading}
+                        className="w-full bg-blue-500 text-white py-3 rounded-lg disabled:opacity-50"
+                    >
+                        {isLoading ? "Creating..." : "Create Member"}
+                    </button>
+
+                </div>
+            </form>
         </div>
     );
 };

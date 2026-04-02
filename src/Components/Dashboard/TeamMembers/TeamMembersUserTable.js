@@ -12,24 +12,29 @@ import { toast } from 'react-toastify';
 const TeamMembersUserTable = () => {
     const [page, setPage] = useState(1);
     const limit = 10;
-    const { data, isLoading, isFetching } = useGetTeamMembersUsersInfoQuery({ page, limit });
+    const { data, isLoading, isFetching, refetch } = useGetTeamMembersUsersInfoQuery({ page, limit });
     const fullData = data?.data?.attributes?.docs || [];
     const totalDocs = data?.data?.attributes?.totalDocs || 0; // total items
     const totalPages = data?.data?.attributes?.totalPages || 1; // total pages
 
-    const [deleteChildProfile] = useDeleteChieldProfileMutation(); 
+    const [deleteChildProfile] = useDeleteChieldProfileMutation();
 
-    console.log(data?.data?.attributes)
 
     const [deleteTarget, setDeleteTarget] = useState(null);
 
     const handleDeleteClick = async (member) => {
-        console.log(member?.childUserId);
 
         try {
             const res = await deleteChildProfile(member?.childUserId);
             console.log(res);
-            toast.success('Member deleted successfully');
+            refetch();
+            if (res?.error) {
+                toast.error(res?.error?.data?.message || 'Failed to delete member');
+                return;
+            }
+            else {
+                toast.success('Member deleted successfully');
+            }
         } catch (error) {
             console.error("Error deleting child profile:", error);
             toast.error('Failed to delete member');
@@ -57,7 +62,7 @@ const TeamMembersUserTable = () => {
     if (isLoading) {
         return <div className='space-y-4'>
             {
-                [...Array(2)].map((_, index) => (
+                [...Array(3)].map((_, index) => (
                     <CardLoading key={index} />
                 ))
             }
