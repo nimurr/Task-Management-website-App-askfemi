@@ -17,7 +17,7 @@ const TeamMembersUserTable = () => {
     const totalDocs = data?.data?.attributes?.totalDocs || 0; // total items
     const totalPages = data?.data?.attributes?.totalPages || 1; // total pages
 
-    const [deleteChildProfile] = useDeleteChieldProfileMutation();
+    const [deleteChildProfile] = useDeleteChieldProfileMutation(); 
 
     console.log(data?.data?.attributes)
 
