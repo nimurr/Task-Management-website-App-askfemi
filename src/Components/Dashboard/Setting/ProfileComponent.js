@@ -1,5 +1,5 @@
 import url from '@/redux/api/baseUrl';
-import { useGetProfileQuery } from '@/redux/fetures/profile/profile';
+import { useGetProfileQuery, useUpdateProfileMutation } from '@/redux/fetures/profile/profile';
 import React, { useRef, useState } from 'react';
 import { FiCamera, FiUser, FiMail, FiPhone, FiMapPin } from 'react-icons/fi';
 
@@ -7,6 +7,8 @@ const ProfileComponent = () => {
 
     const { data } = useGetProfileQuery();
     const user = data?.data?.attributes;
+
+     const [updateProfile] = useUpdateProfileMutation();
 
 
     // Image preview state
@@ -29,6 +31,7 @@ const ProfileComponent = () => {
 
     const handleSubmitForm = (e) => {
         e.preventDefault();
+        
     }
 
     return (

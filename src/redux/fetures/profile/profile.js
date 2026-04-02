@@ -8,7 +8,14 @@ const profile = apiSlice.injectEndpoints({
                 method: "GET",
             }),
         }),
+        updateProfile: builder.mutation({
+            query: (data) => ({
+                url: `/users/profile`,
+                method: "PUT",
+                body: data,
+            }),
+        }),
     }),
 })
 
-export const { useGetProfileQuery } = profile
+export const { useGetProfileQuery , useUpdateProfileMutation } = profile
