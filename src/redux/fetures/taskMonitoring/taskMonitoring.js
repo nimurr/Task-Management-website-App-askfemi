@@ -21,7 +21,7 @@ const taskMonitoring = apiSlice.injectEndpoints({
         }),
         createTaskForChildren: builder.mutation({
             query: (data) => ({
-                url: `/tasks`,
+                url: `/tasks/v2`,
                 method: "POST",
                 body: data,
             }),
