@@ -83,7 +83,7 @@ const Page = () => {
             const res = await createChildrenTask(payload).unwrap();
             console.log(res)
             if (res?.code == 201) {
-                toast.error(res?.message);
+                toast.success(res?.message);
                 router.push('/dashboard/task-monitoring/create-task');
             }
             else {
