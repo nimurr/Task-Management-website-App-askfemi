@@ -1,78 +1,71 @@
 'use client'
 import url from '@/redux/api/baseUrl';
+import { useGetNotificationsQuery, useReadAllNotificationsMutation, useReadSingleNotificationMutation } from '@/redux/fetures/notificaiton/notificaiton';
 import { useGetProfileQuery } from '@/redux/fetures/profile/profile';
 import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
-import { FiSearch, FiBell, FiChevronDown, FiMenu, FiCheck, FiCheckCircle, FiClock, FiUserPlus, FiTrash2 } from 'react-icons/fi';
+import { FiSearch, FiBell, FiChevronDown, FiMenu, FiCheck, FiTrash2, FiClipboard, FiUsers, FiUser } from 'react-icons/fi';
 
-const notifications = [
-    {
-        id: 1,
-        type: 'task',
-        icon: <FiCheckCircle size={16} className='text-blue-500' />,
-        iconBg: 'bg-blue-50',
-        title: 'Task Completed',
-        message: 'Jamie Chen completed "Complete Math Homework"',
-        time: '2 minutes ago',
-        read: false,
-    },
-    {
-        id: 2,
-        type: 'member',
-        icon: <FiUserPlus size={16} className='text-green-500' />,
-        iconBg: 'bg-green-50',
-        title: 'New Member Joined',
-        message: 'Sam Rivera joined your team as Secondary User',
-        time: '1 hour ago',
-        read: false,
-    },
-    {
-        id: 3,
-        type: 'task',
-        icon: <FiClock size={16} className='text-yellow-500' />,
-        iconBg: 'bg-yellow-50',
-        title: 'Task Due Soon',
-        message: 'Review project milestones is due in 2 hours',
-        time: '3 hours ago',
-        read: true,
-    },
-    {
-        id: 4,
-        type: 'task',
-        icon: <FiCheckCircle size={16} className='text-blue-500' />,
-        iconBg: 'bg-blue-50',
-        title: 'Task Assigned',
-        message: 'Mr. Tom Alax assigned you a new task',
-        time: 'Yesterday',
-        read: true,
-    },
-    {
-        id: 5,
-        type: 'member',
-        icon: <FiUserPlus size={16} className='text-green-500' />,
-        iconBg: 'bg-green-50',
-        title: 'Permission Updated',
-        message: 'Alax Morgn was granted task creation permission',
-        time: '2 days ago',
-        read: true,
-    },
-];
+// Helper: relative time from ISO date
+const timeAgo = (isoDate) => {
+    const diff = Math.floor((Date.now() - new Date(isoDate)) / 1000);
+    if (diff < 60) return `${diff}s ago`;
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return `${Math.floor(diff / 86400)}d ago`;
+};
+
+// Helper: icon & color based on notification type
+const getIconConfig = (type) => {
+    switch (type) {
+        case 'assignment':
+            return { icon: <FiUsers size={14} />, bg: 'bg-blue-100 text-blue-500' };
+        case 'task':
+            return { icon: <FiClipboard size={14} />, bg: 'bg-green-100 text-green-500' };
+        default:
+            return { icon: <FiUser size={14} />, bg: 'bg-gray-100 text-gray-500' };
+    }
+};
 
 const DashboardHeader = ({ toggleSidebar }) => {
+
+    const { data: notificationData } = useGetNotificationsQuery();
+    const rawNotifications = notificationData?.data?.attributes?.results || [];
+    const [readSingleNotification] = useReadSingleNotificationMutation();
+    const [readAllNotifications] = useReadAllNotificationsMutation();
+
+    // Map API fields to component shape
+    const mapped = rawNotifications.map((n) => {
+        const { icon, bg } = getIconConfig(n.type);
+        return {
+            id: n._id,
+            title: n.title,
+            message: n.subTitle,
+            time: timeAgo(n.createdAt),
+            read: n.status !== 'pending',   // pending = unread
+            icon,
+            iconBg: bg,
+            linkId: n.linkId,
+            linkFor: n.linkFor,
+        };
+    });
+
     const [notifOpen, setNotifOpen] = useState(false);
-    const [notifs, setNotifs] = useState(notifications);
+    const [notifs, setNotifs] = useState([]);
     const notifRef = useRef(null);
+
+    // Sync when API data loads
+    useEffect(() => {
+        if (mapped.length > 0) setNotifs(mapped);
+    }, [notificationData]);
 
     const unreadCount = notifs.filter((n) => !n.read).length;
 
-
-    const { data, isLoading, isError, error, refetch } = useGetProfileQuery(undefined, {
+    const { data, error } = useGetProfileQuery(undefined, {
         skip: typeof window === 'undefined',
         refetchOnMountOrArgChange: true,
     });
 
-    // Check if session has expired (401 error)
-    // RTK Query puts the response in error.data when status is not 2xx
     const isSessionExpired = error?.status === 401 || error?.data?.code === 401;
     const user = isSessionExpired ? null : data?.data?.attributes;
 
@@ -81,11 +74,8 @@ const DashboardHeader = ({ toggleSidebar }) => {
         localStorage.removeItem('user');
         window.location.href = '/login';
     }
- 
-
 
     useEffect(() => {
-
         const handleClickOutside = (e) => {
             if (notifRef.current && !notifRef.current.contains(e.target)) {
                 setNotifOpen(false);
@@ -95,17 +85,38 @@ const DashboardHeader = ({ toggleSidebar }) => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const markAllRead = () => {
+    const markAllRead = async () => {
+        // Optimistic UI update
         setNotifs((prev) => prev.map((n) => ({ ...n, read: true })));
+
+        try {
+            await readAllNotifications().unwrap();
+        } catch (err) {
+            // Revert on API failure
+            setNotifs((prev) => prev.map((n) => ({ ...n, read: false })));
+            console.error('Failed to mark all notifications as read:', err);
+        }
+    };
+
+    const markRead = async (id) => {
+        const target = notifs.find((n) => n.id === id);
+        if (!target || target.read) return; // skip if already read
+
+        // Optimistic UI update
+        setNotifs((prev) => prev.map((n) => n.id === id ? { ...n, read: true } : n));
+
+        try {
+            await readSingleNotification(id).unwrap();
+        } catch (err) {
+            // Revert on API failure
+            setNotifs((prev) => prev.map((n) => n.id === id ? { ...n, read: false } : n));
+            console.error('Failed to mark notification as read:', err);
+        }
     };
 
     const deleteNotif = (id, e) => {
         e.stopPropagation();
         setNotifs((prev) => prev.filter((n) => n.id !== id));
-    };
-
-    const markRead = (id) => {
-        setNotifs((prev) => prev.map((n) => n.id === id ? { ...n, read: true } : n));
     };
 
     return (
@@ -227,7 +238,7 @@ const DashboardHeader = ({ toggleSidebar }) => {
                 {/* User Profile */}
                 <Link href='/dashboard/setting' className='flex items-center gap-2 cursor-pointer hover:bg-blue-200 bg-blue-100 border border-blue-200 rounded-lg px-2 py-1 transition-colors'>
                     <div className='w-9 h-9 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-400 flex-shrink-0 flex items-center justify-center'>
-                        <img className='w-full h-cull' src={url + user?.profileImage?.imageUrl} alt="" />
+                        <img className='w-full h-full' src={url + user?.profileImage?.imageUrl} alt="" />
                     </div>
                     <div className='flex flex-col leading-tight'>
                         <span className='text-sm font-semibold text-gray-800'>{user?.name}</span>

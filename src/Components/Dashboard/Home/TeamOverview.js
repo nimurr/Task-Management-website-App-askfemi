@@ -74,6 +74,8 @@ const TeamOverview = () => {
 
     const members = data?.data?.attributes?.children || [];
 
+    console.log(members)
+
     // ✅ FIX: remove undefined/null
     const withMyInfo = [
         data?.data?.attributes?.parentInfo,
