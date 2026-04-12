@@ -228,7 +228,7 @@
 
 
 "use client";
-import { useGetSubscriptionQuery } from '@/redux/fetures/subscription/subscription';
+import { useGetSubscriptionQuery, useTakeSubscriptionMutation } from '@/redux/fetures/subscription/subscription';
 import React, { useState } from 'react';
 import {
     FaCheckCircle,
@@ -240,6 +240,7 @@ import {
     FaMobile,
     FaGlobe,
 } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 // Card style based on subscription type
 const getCardStyle = (type) => {
@@ -322,9 +323,30 @@ const getFeatures = (sub) => {
 
 // Single subscription card
 const SubscriptionCard = ({ sub }) => {
+
+    const [takeSubscripton] = useTakeSubscriptionMutation();
+
+
     const [showMore, setShowMore] = useState(false);
     const style = getCardStyle(sub.subscriptionType);
     const features = getFeatures(sub);
+
+
+
+    const handleTakeSub = async (id) => {
+        try {
+            const res = await takeSubscripton({ id }).unwrap();
+            console.log(res)
+            if(res?.code === 200){
+                toast.success(res?.message || 'Subscribed Successfully');
+                window.location.href = res?.data?.attributes;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+
 
     return (
         <div
@@ -358,8 +380,9 @@ const SubscriptionCard = ({ sub }) => {
                 <button
                     className='w-full py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 mb-5'
                     style={style.btnStyle}
-                    onMouseEnter={e => Object.assign(e.currentTarget.style, style.btnHover)}
-                    onMouseLeave={e => Object.assign(e.currentTarget.style, style.btnLeave)}
+                    onClick={() => handleTakeSub(sub._subscriptionId)}
+                // onMouseEnter={e => Object.assign(e.currentTarget.style, style.btnHover)}
+                // onMouseLeave={e => Object.assign(e.currentTarget.style, style.btnLeave)}
                 >
                     Get Started Now
                 </button>

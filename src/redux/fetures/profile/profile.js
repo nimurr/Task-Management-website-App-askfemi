@@ -36,7 +36,7 @@ const profile = apiSlice.injectEndpoints({
         }),
         createMemberProfile: builder.mutation({
             query: (data) => ({
-                url: `/children-business-users/children`,
+                url: `/children-business-users/children/v2`,
                 method: "POST",
                 body: data,
             }),

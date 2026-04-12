@@ -8,7 +8,13 @@ const subscription = apiSlice.injectEndpoints({
                 method: "GET",
             }),
         }),
+        takeSubscription: builder.mutation({
+            query: ({ id }) => ({
+                url: `/subscription-plan/purchase/${id}`,
+                method: "POST"
+            }),
+        })
     }),
 });
 
-export const { useGetSubscriptionQuery } = subscription;
+export const { useGetSubscriptionQuery , useTakeSubscriptionMutation } = subscription;
