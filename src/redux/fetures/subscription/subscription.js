@@ -13,8 +13,32 @@ const subscription = apiSlice.injectEndpoints({
                 url: `/subscription-plan/purchase/${id}`,
                 method: "POST"
             }),
-        })
+        }),
+        getMySubscriptionHistory: builder.query({
+            query: () => ({
+                url: "/user-subs",
+                method: "GET",
+            }),
+        }),
+        getMyActiveSubscription: builder.query({
+            query: () => ({
+                url: "/user-subscriptions/my-active",
+                method: "GET",
+            }),
+        }),
+        cancelSubscription: builder.mutation({
+            query: (data) => ({
+                url: `/user-subs/cancel`,
+                method: "POST",
+                body: data
+            }),
+        }),
     }),
 });
 
-export const { useGetSubscriptionQuery , useTakeSubscriptionMutation } = subscription;
+export const { 
+    useGetSubscriptionQuery, 
+    useTakeSubscriptionMutation , 
+    useGetMySubscriptionHistoryQuery , 
+    useGetMyActiveSubscriptionQuery , 
+    useCancelSubscriptionMutation } = subscription;
