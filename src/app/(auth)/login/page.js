@@ -33,8 +33,8 @@ const Page = () => {
                 localStorage.setItem('user', JSON.stringify(response?.data?.attributes?.userWithoutPassword));
                 localStorage.setItem('token', JSON.stringify(response?.data?.attributes?.tokens?.accessToken));
                 if (response?.data?.attributes?.userWithoutPassword?.role === 'business' || response?.data?.attributes?.userWithoutPassword?.role === 'super-admin') {
-                    // window.location.href = '/dashboard';
-                    navigate.push('/dashboard');
+                    window.location.href = '/dashboard';
+                    // navigate.push('/dashboard');
                 }
 
             }
