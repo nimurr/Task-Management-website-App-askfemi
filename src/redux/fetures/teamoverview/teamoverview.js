@@ -11,4 +11,4 @@ const teamoverview = apiSlice.injectEndpoints({
     }),
 });
 
-export const { useGetTeamOverviewQuery } = teamoverview;
+export const { useGetTeamOverviewQuery } = teamoverview;   

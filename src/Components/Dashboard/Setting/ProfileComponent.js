@@ -1,38 +1,79 @@
 import url from '@/redux/api/baseUrl';
 import { useGetProfileQuery, useUpdateProfileMutation } from '@/redux/fetures/profile/profile';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { FiCamera, FiUser, FiMail, FiPhone, FiMapPin } from 'react-icons/fi';
+import { toast } from 'react-toastify';
+
 
 const ProfileComponent = () => {
 
-    const { data } = useGetProfileQuery();
+    const { data , refetch} = useGetProfileQuery();
     const user = data?.data?.attributes;
+    const [updateProfile, { isLoading }] = useUpdateProfileMutation();
 
-     const [updateProfile] = useUpdateProfileMutation();
+    // Form state
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phoneNumber: '',
+        location: '',
+    });
 
-
-    // Image preview state
+    // Image state
     const [previewImage, setPreviewImage] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
     const fileInputRef = useRef(null);
 
-    // Handle image change
+    // Sync form state when user data loads
+    useEffect(() => {
+        if (user) {
+            setFormData({
+                name: user?.name || '',
+                email: user?.email || '',
+                phoneNumber: user?.phoneNumber || '',
+                location: user?.profileId?.location || '',
+            });
+        }
+    }, [user]);
+
+    // Handle text input changes
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    // Handle image selection
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setPreviewImage(imageUrl);
-
-            // 👉 Later: API integration here
-            // const formData = new FormData();
-            // formData.append("image", file);
+            setPreviewImage(URL.createObjectURL(file));
+            setImageFile(file);
         }
     };
 
-
-    const handleSubmitForm = (e) => {
+    // Handle form submit
+    const handleSubmitForm = async (e) => {
         e.preventDefault();
-        
-    }
+
+        try {
+            const payload = new FormData();
+            payload.append('name', formData.name);
+            // payload.append('email', formData.email);
+            payload.append('phoneNumber', formData.phoneNumber);
+            payload.append('location', formData.location);
+
+            if (imageFile) {
+                payload.append('profileImage', imageFile);
+            }
+
+            const res = await updateProfile(payload).unwrap();
+            console.log(res)
+            toast.success('Profile updated successfully!');
+            refetch();
+        } catch (error) {
+            toast.error(error?.data?.message || 'Failed to update profile.');
+        }
+    };
 
     return (
         <form onSubmit={handleSubmitForm} className='flex flex-col gap-6'>
@@ -43,12 +84,11 @@ const ProfileComponent = () => {
                 <div className='flex items-center gap-6'>
                     <div className='relative'>
                         <img
-                            src={previewImage || (url + user?.profileImage?.imageUrl)}
+                            src={previewImage || (user?.profileImage?.imageUrl.includes('cloudinary.com') ? user?.profileImage?.imageUrl : url + user?.profileImage?.imageUrl)}
                             alt='Profile'
                             className='w-20 h-20 rounded-full object-cover'
                         />
 
-                        {/* Hidden File Input */}
                         <input
                             type="file"
                             accept="image/*"
@@ -57,7 +97,6 @@ const ProfileComponent = () => {
                             className="hidden"
                         />
 
-                        {/* Camera Button */}
                         <button
                             type="button"
                             onClick={() => fileInputRef.current.click()}
@@ -70,7 +109,6 @@ const ProfileComponent = () => {
                     <div>
                         <p className='text-sm font-semibold text-gray-800'>{user?.name}</p>
                         <p className='text-xs text-gray-400 mt-0.5 capitalize'>{user?.role} Account</p>
-
                         <button
                             type="button"
                             onClick={() => fileInputRef.current.click()}
@@ -94,7 +132,9 @@ const ProfileComponent = () => {
                             <FiUser size={15} className='text-gray-400 flex-shrink-0' />
                             <input
                                 type='text'
-                                defaultValue={user?.name}
+                                name='name'
+                                value={formData.name}
+                                onChange={handleInputChange}
                                 className='text-sm text-gray-700 outline-none w-full bg-transparent'
                             />
                         </div>
@@ -107,7 +147,9 @@ const ProfileComponent = () => {
                             <FiMail size={15} className='text-gray-400 flex-shrink-0' />
                             <input
                                 type='email'
-                                defaultValue={user?.email}
+                                name='email'
+                                value={formData.email}
+                                onChange={handleInputChange}
                                 className='text-sm text-gray-700 outline-none w-full bg-transparent'
                             />
                         </div>
@@ -120,7 +162,9 @@ const ProfileComponent = () => {
                             <FiPhone size={15} className='text-gray-400 flex-shrink-0' />
                             <input
                                 type='tel'
-                                defaultValue={user?.phoneNumber || '***-***-****'}
+                                name='phoneNumber'
+                                value={formData.phoneNumber}
+                                onChange={handleInputChange}
                                 className='text-sm text-gray-700 outline-none w-full bg-transparent'
                             />
                         </div>
@@ -133,7 +177,9 @@ const ProfileComponent = () => {
                             <FiMapPin size={15} className='text-gray-400 flex-shrink-0' />
                             <input
                                 type='text'
-                                defaultValue={user?.location || "*********"}
+                                name='location'
+                                value={formData.location}
+                                onChange={handleInputChange}
                                 className='text-sm text-gray-700 outline-none w-full bg-transparent'
                             />
                         </div>
@@ -144,9 +190,10 @@ const ProfileComponent = () => {
                 <div className='flex justify-end mt-5'>
                     <button
                         type="submit"
-                        className='bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-colors cursor-pointer'
+                        disabled={isLoading}
+                        className='bg-blue-500 hover:bg-blue-600 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-colors cursor-pointer'
                     >
-                        Save Changes
+                        {isLoading ? 'Saving...' : 'Save Changes'}
                     </button>
                 </div>
             </div>

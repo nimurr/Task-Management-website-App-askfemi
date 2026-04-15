@@ -238,7 +238,10 @@ const DashboardHeader = ({ toggleSidebar }) => {
                 {/* User Profile */}
                 <Link href='/dashboard/setting' className='flex items-center gap-2 cursor-pointer hover:bg-blue-200 bg-blue-100 border border-blue-200 rounded-lg px-2 py-1 transition-colors'>
                     <div className='w-9 h-9 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-400 flex-shrink-0 flex items-center justify-center'>
-                        <img className='w-full h-full' src={url + user?.profileImage?.imageUrl} alt="" />
+                        <img className='w-full h-full' 
+                        // src={url + user?.profileImage?.imageUrl} 
+                          src={user?.profileImage?.imageUrl.includes('cloudinary.com') ? user?.profileImage?.imageUrl : url + user?.profileImage?.imageUrl}
+                        alt="" />
                     </div>
                     <div className='flex flex-col leading-tight'>
                         <span className='text-sm font-semibold text-gray-800'>{user?.name}</span>
