@@ -92,7 +92,10 @@ const TeamMembersUserTable = () => {
                                 <td className='px-4 py-5'>
                                     <div className='flex items-center gap-2.5'>
                                         <img
-                                            src={url + member.profileImage?.imageUrl}
+                                            src={
+                                                member.profileImage?.imageUrl?.includes('cloudinary.com') ? member.profileImage.imageUrl :
+                                                url + member.profileImage?.imageUrl
+                                            }
                                             alt={member.name}
                                             className='w-9 h-9 rounded-full object-cover flex-shrink-0'
                                         />

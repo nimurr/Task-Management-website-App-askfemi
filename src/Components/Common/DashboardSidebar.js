@@ -29,9 +29,8 @@ const DashboardSidebar = () => {
     const teamMembers = teamMembersRaw.map((item, index) => ({
         id: item._id,
         name: item.name,
-        img: item.profileImage?.imageUrl
-            ? `${url}${item.profileImage.imageUrl}`
-            : `https://i.pravatar.cc/40?img=${index + 1}`,
+        img: item.profileImage?.imageUrl.includes('cloudinary.com') ? item.profileImage.imageUrl : url + item.profileImage?.imageUrl,
+            
         tasks: item.taskProgress?.totalTasks || 0
     }));
 

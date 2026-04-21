@@ -12,7 +12,12 @@ const MemberCard = ({ member }) => {
 
             {/* Image */}
             <img
-                src={member?.profileImage?.imageUrl ? url + member.profileImage.imageUrl : '/default.png'}
+                src={
+                    member.profileImage?.imageUrl?.includes('cloudinary.com') ? 
+                    member.profileImage.imageUrl :
+                    url + member.profileImage?.imageUrl
+                }
+
                 alt={member?.childName || 'User'}
                 className='w-32 h-full object-cover flex-shrink-0'
                 style={{ minHeight: '160px', maxHeight: '180px' }}
@@ -114,9 +119,9 @@ const TeamOverview = () => {
                         ))
                         : (
                             <p className='text-center col-span-3 text-gray-400'>
-                               
-                                 <img className='w-[200px] block mx-auto mb-5' src="https://www.pngexpert.com/assets/images/empty_message.png" alt="" />
-                                  No members found
+
+                                <img className='w-[200px] block mx-auto mb-5' src="https://www.pngexpert.com/assets/images/empty_message.png" alt="" />
+                                No members found
                             </p>
                         )
                 }

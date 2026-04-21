@@ -182,7 +182,11 @@ const Page = () => {
                         <div key={member.child._id} className="flex flex-col items-center gap-1">
                             <div className="flex items-center gap-2">
                                 <img
-                                    src={url + member.child.profileImage}
+                                    src={
+                                        member.child.profileImage.includes('cloudinary.com')
+                                            ? member.child.profileImage
+                                            : url + member.child.profileImage
+                                    }
                                     alt={member.child.name}
                                     className="w-10 h-10 rounded-full object-cover"
                                 />

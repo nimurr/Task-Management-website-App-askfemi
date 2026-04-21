@@ -1,4 +1,4 @@
- 
+
 
 'use client';
 import React from 'react';
@@ -73,7 +73,11 @@ const Page = () => {
                             <div key={member.child._id} className="flex flex-col items-center gap-1">
                                 <div className="flex items-center gap-2">
                                     <img
-                                        src={url + member.child.profileImage}
+                                        src={
+                                            member.child.profileImage.includes('cloudinary.com')
+                                            ? member.child.profileImage
+                                            : url + member.child.profileImage
+                                        }
                                         alt={member.child.name}
                                         className="w-10 h-10 rounded-full object-cover"
                                     />
@@ -118,10 +122,10 @@ const Page = () => {
                         <p className="text-sm font-semibold text-gray-800 mb-2">Status</p>
                         <span
                             className={`text-xs font-semibold px-4 py-1 rounded-lg ${fullTask.status === 'inProgress'
-                                    ? 'bg-blue-500 text-white'
-                                    : fullTask.status === 'completed'
-                                        ? 'bg-green-500 text-white'
-                                        : 'bg-gray-300 text-gray-800'
+                                ? 'bg-blue-500 text-white'
+                                : fullTask.status === 'completed'
+                                    ? 'bg-green-500 text-white'
+                                    : 'bg-gray-300 text-gray-800'
                                 }`}
                         >
                             {fullTask.status}

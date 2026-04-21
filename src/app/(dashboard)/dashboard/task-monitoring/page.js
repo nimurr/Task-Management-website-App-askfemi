@@ -8,7 +8,7 @@ const Page = () => {
         <div>
             <TaskMonitoringOverview />
             <TaskMonitoringTaskActivity />
-             <TaskManagementMain />
+            <TaskManagementMain />
         </div>
     );
 }

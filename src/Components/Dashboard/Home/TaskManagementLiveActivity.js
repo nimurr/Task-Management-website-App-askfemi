@@ -41,7 +41,8 @@ const TaskManagementLiveActivity = () => {
                             {/* Actor Image */}
                             {activity.actor?.profileImage && (
                                 <img
-                                    src={url + activity.actor.profileImage}
+                                    src={activity.actor.profileImage.includes('cloudinary.com') ? activity.actor.profileImage : url + activity.actor.profileImage}
+
                                     alt={activity.actor.name}
                                     className='w-10 h-10 rounded-full object-cover flex-shrink-0'
                                 />
@@ -76,8 +77,8 @@ const TaskManagementLiveActivity = () => {
                     )}
                 </div>
             </div>
- 
-         
+
+
         </div>
     );
 };

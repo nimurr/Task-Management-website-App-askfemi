@@ -116,7 +116,10 @@ const TaskCard = ({ task }) => {
                             {task.assignedAll.map((member, i) => (
                                 <div key={i} className='flex flex-col items-center gap-1'>
                                     <div className='flex items-center gap-1.5'>
-                                        <img src={url + member.img} className='w-8 h-8 rounded-full object-cover' />
+                                        <img src={
+                                            member.img.includes('cloudinary.com') ? member.img :
+                                            url + member.img
+                                        } className='w-8 h-8 rounded-full object-cover' />
                                         <span className='text-sm font-medium text-gray-800'>{member.name}</span>
                                     </div>
                                     <span className={memberStatusStyles[member.status]}>
