@@ -61,7 +61,7 @@ const Header = () => {
                         className="flex items-center gap-1.5 text-xs sm:text-sm hover:text-blue-100 transition-colors duration-200"
                     >
                         <MdOutlineMailOutline className="text-base sm:text-lg shrink-0" />
-                        <span>Support@gmail.com</span>
+                        <span>info@oceanblack.org</span>
                     </Link>
                     <Link
                         href="tel:+12121231223131"
