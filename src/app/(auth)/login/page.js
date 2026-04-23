@@ -32,6 +32,17 @@ const Page = () => {
                 toast.error('Invalid response from server');
                 return;
             }
+<<<<<<< HEAD
+=======
+            else {
+                toast.success('Login successful');
+                localStorage.setItem('user', JSON.stringify(response?.data?.attributes?.userWithoutPassword));
+                localStorage.setItem('token', JSON.stringify(response?.data?.attributes?.tokens?.accessToken));
+                if (response?.data?.attributes?.userWithoutPassword?.role === 'business' || response?.data?.attributes?.userWithoutPassword?.role === 'super-admin') {
+                    window.location.href = '/dashboard';
+                    // navigate.push('/dashboard');
+                }
+>>>>>>> e812697b2fcef8f6f0c2e517109ef2cc2f70551f
 
             // ✅ store safely (NO JSON.stringify)
             localStorage.setItem('user', JSON.stringify(user));
